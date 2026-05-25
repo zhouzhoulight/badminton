@@ -1,0 +1,13 @@
+<svg width="96" height="96" viewBox="0 0 96 96" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+  <title id="title">Yi Pai Ji Hui logo</title>
+  <desc id="desc">A shuttlecock and pose graph mark for an AI badminton coaching project.</desc>
+  <rect x="8" y="8" width="80" height="80" rx="20" fill="#0F9F68"/>
+  <path d="M26 26L53 57" stroke="#F7FFF8" stroke-width="5" stroke-linecap="round"/>
+  <path d="M36 21L62 48" stroke="#D9FF73" stroke-width="4" stroke-linecap="round"/>
+  <path d="M49 18L69 39" stroke="#F7FFF8" stroke-width="4" stroke-linecap="round"/>
+  <path d="M23 69C31 58 45 50 60 50C68 50 75 52 80 56" stroke="#F7FFF8" stroke-width="4" stroke-linecap="round"/>
+  <circle cx="32" cy="62" r="5" fill="#D9FF73"/>
+  <circle cx="50" cy="53" r="4" fill="#F7FFF8"/>
+  <circle cx="68" cy="53" r="4" fill="#D9FF73"/>
+  <path d="M32 62L50 53L68 53" stroke="#10251D" stroke-width="2.5" stroke-linecap="round"/>
+</svg>
