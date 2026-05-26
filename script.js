@@ -116,6 +116,56 @@ const phasePlan = [
   { end: 52, phase: "成果整理", title: "软著、论文、开源与结题", output: "软著材料、论文初稿、开源仓库" },
 ];
 
+const milestonePlan = [
+  {
+    start: 1,
+    end: 4,
+    name: "M1",
+    title: "立项与环境",
+    summary: "需求定稿、资料沉淀、仓库与开发环境搭建",
+  },
+  {
+    start: 5,
+    end: 12,
+    name: "M2",
+    title: "姿态与数据",
+    summary: "RTMPose 验证、标准动作视频、首批高远球数据",
+  },
+  {
+    start: 13,
+    end: 22,
+    name: "M3",
+    title: "击球帧与识别",
+    summary: "击球帧定位、COCO17 链路、ST-GCN 基线训练",
+  },
+  {
+    start: 23,
+    end: 40,
+    name: "M4",
+    title: "纠错与原型",
+    summary: "层次分类、App 原型、规则引擎与周训练计划",
+  },
+  {
+    start: 41,
+    end: 52,
+    name: "M5",
+    title: "测试与成果",
+    summary: "用户测试、迭代优化、软著论文与开源发布",
+  },
+];
+
+const memberAccounts = [
+  { username: "zhouzhou", name: "周洲" },
+  { username: "yangziyu", name: "杨子钰" },
+  { username: "caomuning", name: "曹沐宁" },
+  { username: "wangpenghan", name: "王鹏涵" },
+  { username: "jiangyaqi", name: "姜雅琪" },
+  { username: "zhuzihan", name: "朱梓涵" },
+];
+
+const authSessionKey = "yipaijihui-member-session";
+const authPasswordKey = "yipaijihui-password-hashes";
+
 const memberProgress = [
   {
     name: "周洲",
@@ -496,68 +546,131 @@ function drawSkeleton() {
   if (!canvas) return;
   const ctx = canvas.getContext("2d");
   const active = demoData[selectedAction].joints;
-  const t = Date.now() / 640;
-  const sway = Math.sin(t) * 8;
-  const points = {
-    head: [180 + sway * 0.2, 82],
-    neck: [176 + sway * 0.3, 126],
-    shoulder: [128 + sway, 144],
-    shoulderR: [224 + sway * 0.4, 142],
-    elbow: [96 + sway * 1.2, 205],
-    elbowR: [258 + sway * 0.4, 196],
-    wrist: [78 + Math.sin(t * 1.5) * 10, 270],
-    wristR: [298, 236 + Math.cos(t) * 7],
-    hip: [158 + sway * 0.4, 244],
-    hipR: [218 + sway * 0.2, 244],
-    knee: [136 + sway * 0.3, 320],
-    kneeR: [236 + sway * 0.2, 320],
-    ankle: [120, 386],
-    ankleR: [254, 386],
-    racket: [70 + Math.sin(t * 1.5) * 12, 318],
-  };
-  const links = [
-    ["head", "neck"],
-    ["neck", "shoulder"],
-    ["neck", "shoulderR"],
-    ["shoulder", "elbow"],
-    ["elbow", "wrist"],
-    ["shoulderR", "elbowR"],
-    ["elbowR", "wristR"],
-    ["neck", "hip"],
-    ["neck", "hipR"],
-    ["hip", "hipR"],
-    ["hip", "knee"],
-    ["knee", "ankle"],
-    ["hipR", "kneeR"],
-    ["kneeR", "ankleR"],
-    ["wrist", "racket"],
+  const t = Date.now() / 1000;
+  const swing = Math.sin(t * 2.2);
+  const hitPulse = Math.max(0, Math.sin(t * 2.2 - 0.7));
+  const sway = Math.sin(t * 1.1) * 5;
+  const coco = [
+    [184 + sway * 0.2, 78],
+    [176 + sway * 0.2, 72],
+    [192 + sway * 0.2, 72],
+    [169 + sway * 0.2, 80],
+    [199 + sway * 0.2, 80],
+    [132 + sway, 136],
+    [218 + sway * 0.4, 132],
+    [105 + sway * 1.2, 198],
+    [254 + swing * 20, 178 - hitPulse * 34],
+    [96 + Math.sin(t * 2) * 10, 268],
+    [295 + swing * 26, 116 - hitPulse * 42],
+    [154 + sway * 0.4, 246],
+    [212 + sway * 0.2, 246],
+    [132 + sway * 0.3, 322],
+    [232 + sway * 0.2, 320],
+    [118, 386],
+    [252, 386],
+  ];
+  const cocoLinks = [
+    [0, 1],
+    [0, 2],
+    [1, 3],
+    [2, 4],
+    [5, 6],
+    [5, 7],
+    [7, 9],
+    [6, 8],
+    [8, 10],
+    [5, 11],
+    [6, 12],
+    [11, 12],
+    [11, 13],
+    [13, 15],
+    [12, 14],
+    [14, 16],
+  ];
+  const jointNames = [
+    "nose",
+    "left_eye",
+    "right_eye",
+    "left_ear",
+    "right_ear",
+    "left_shoulder",
+    "right_shoulder",
+    "left_elbow",
+    "right_elbow",
+    "left_wrist",
+    "right_wrist",
+    "left_hip",
+    "right_hip",
+    "left_knee",
+    "right_knee",
+    "left_ankle",
+    "right_ankle",
+  ];
+  const activeIndexes = new Set();
+  active.forEach((joint) => {
+    jointNames.forEach((name, index) => {
+      if (name.includes(joint)) activeIndexes.add(index);
+    });
+  });
+  [6, 8, 10].forEach((index) => activeIndexes.add(index));
+  const racketStart = coco[10];
+  const racketEnd = [racketStart[0] + 28, racketStart[1] - 50];
+  const shuttle = [
+    282 - ((t * 72) % 170),
+    88 + Math.sin(t * 2.2) * 28,
   ];
 
   ctx.clearRect(0, 0, canvas.width, canvas.height);
-  ctx.fillStyle = "rgba(255,255,255,0.06)";
+  ctx.fillStyle = "rgba(255,255,255,0.055)";
   for (let y = 56; y < canvas.height; y += 38) {
     ctx.fillRect(42, y, canvas.width - 84, 1);
   }
 
-  links.forEach(([from, to]) => {
+  cocoLinks.forEach(([from, to]) => {
+    const highlighted = activeIndexes.has(from) && activeIndexes.has(to);
     ctx.beginPath();
-    ctx.moveTo(...points[from]);
-    ctx.lineTo(...points[to]);
-    ctx.strokeStyle = "rgba(217,255,115,0.72)";
-    ctx.lineWidth = 4;
+    ctx.moveTo(...coco[from]);
+    ctx.lineTo(...coco[to]);
+    ctx.strokeStyle = highlighted ? "rgba(217,255,115,0.95)" : "rgba(255,255,255,0.74)";
+    ctx.lineWidth = highlighted ? 5 : 3.2;
     ctx.lineCap = "round";
     ctx.stroke();
   });
 
-  Object.entries(points).forEach(([name, point]) => {
-    const isActive = active.some((joint) => name.toLowerCase().includes(joint));
+  ctx.beginPath();
+  ctx.moveTo(...racketStart);
+  ctx.lineTo(...racketEnd);
+  ctx.strokeStyle = "rgba(217,255,115,0.82)";
+  ctx.lineWidth = 4;
+  ctx.lineCap = "round";
+  ctx.stroke();
+  ctx.beginPath();
+  ctx.arc(racketEnd[0], racketEnd[1], 16, 0, Math.PI * 2);
+  ctx.strokeStyle = "rgba(255,255,255,0.72)";
+  ctx.lineWidth = 3;
+  ctx.stroke();
+
+  ctx.beginPath();
+  ctx.arc(shuttle[0], shuttle[1], 5, 0, Math.PI * 2);
+  ctx.fillStyle = "#f8fff8";
+  ctx.fill();
+  ctx.beginPath();
+  ctx.moveTo(shuttle[0] - 5, shuttle[1] + 2);
+  ctx.lineTo(shuttle[0] - 20, shuttle[1] + 10);
+  ctx.lineTo(shuttle[0] - 18, shuttle[1] - 6);
+  ctx.closePath();
+  ctx.fillStyle = "rgba(248,255,248,0.78)";
+  ctx.fill();
+
+  coco.forEach((point, index) => {
+    const isActive = activeIndexes.has(index);
     ctx.beginPath();
-    ctx.arc(point[0], point[1], isActive ? 9 : 5, 0, Math.PI * 2);
+    ctx.arc(point[0], point[1], isActive ? 7.5 : 4.5, 0, Math.PI * 2);
     ctx.fillStyle = isActive ? "#d9ff73" : "#ffffff";
     ctx.fill();
     if (isActive) {
       ctx.beginPath();
-      ctx.arc(point[0], point[1], 16 + Math.sin(t * 2) * 3, 0, Math.PI * 2);
+      ctx.arc(point[0], point[1], 13 + hitPulse * 6, 0, Math.PI * 2);
       ctx.strokeStyle = "rgba(217,255,115,0.42)";
       ctx.lineWidth = 2;
       ctx.stroke();
@@ -590,6 +703,7 @@ function setupProgress() {
   document.querySelector("#current-phase").textContent = weekInfo(currentWeek).phase;
   document.querySelector("#progress-percent").textContent = `${percent}%`;
 
+  renderMilestones(currentWeek);
   selectWeek(currentWeek);
   setupMemberProgress();
 }
@@ -608,12 +722,134 @@ function selectWeek(week) {
   document.querySelector("#week-copy").textContent = info.copy;
   document.querySelector("#week-status").textContent = status;
   document.querySelector("#week-output").textContent = `阶段产出：${info.output}`;
+  updateMilestoneState(week);
 
   const activeButton = document.querySelector(`.week-button[data-week="${week}"]`);
   activeButton?.scrollIntoView({ inline: "center", block: "nearest", behavior: "smooth" });
 }
 
+function renderMilestones(currentWeek) {
+  const board = document.querySelector("#milestone-board");
+  if (!board) return;
+  board.replaceChildren(...milestonePlan.map((milestone) => {
+    const status = currentWeek > milestone.end ? "已完成" : currentWeek >= milestone.start ? "进行中" : "待推进";
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "milestone-card";
+    button.dataset.start = String(milestone.start);
+    button.dataset.end = String(milestone.end);
+    button.innerHTML = `
+      <span>${milestone.name}</span>
+      <strong>${milestone.title}</strong>
+      <em>W${milestone.start}-W${milestone.end} · ${status}</em>
+      <small>${milestone.summary}</small>
+    `;
+    button.addEventListener("click", () => {
+      const targetWeek = currentWeek >= milestone.start && currentWeek <= milestone.end ? currentWeek : milestone.start;
+      selectWeek(targetWeek);
+    });
+    return button;
+  }));
+  updateMilestoneState(currentWeek);
+}
+
+function updateMilestoneState(week) {
+  document.querySelectorAll(".milestone-card").forEach((card) => {
+    const start = Number(card.dataset.start);
+    const end = Number(card.dataset.end);
+    card.classList.toggle("active", week >= start && week <= end);
+    card.classList.toggle("done", week > end);
+  });
+}
+
 function setupMemberProgress() {
+  setupMemberAuth();
+  renderMemberAuthState(getActiveAccount());
+}
+
+function setupMemberAuth() {
+  const loginForm = document.querySelector("#login-form");
+  const passwordForm = document.querySelector("#password-form");
+  const passwordToggle = document.querySelector("#password-toggle");
+  const logoutButton = document.querySelector("#logout-button");
+
+  loginForm?.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    const form = new FormData(loginForm);
+    const account = findAccount(String(form.get("username") || ""));
+    const password = String(form.get("password") || "");
+    if (!account || !(await verifyPassword(account.username, password))) {
+      setAuthMessage("#auth-message", "账号或密码不正确。");
+      return;
+    }
+    sessionStorage.setItem(authSessionKey, account.username);
+    loginForm.reset();
+    setAuthMessage("#auth-message", "");
+    renderMemberAuthState(account);
+  });
+
+  passwordToggle?.addEventListener("click", () => {
+    const form = document.querySelector("#password-form");
+    if (!form) return;
+    form.hidden = !form.hidden;
+    setAuthMessage("#password-message", "");
+  });
+
+  logoutButton?.addEventListener("click", () => {
+    sessionStorage.removeItem(authSessionKey);
+    renderMemberAuthState(null);
+  });
+
+  passwordForm?.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    const account = getActiveAccount();
+    if (!account) return;
+    const form = new FormData(passwordForm);
+    const oldPassword = String(form.get("oldPassword") || "");
+    const newPassword = String(form.get("newPassword") || "");
+    const confirmPassword = String(form.get("confirmPassword") || "");
+    if (!(await verifyPassword(account.username, oldPassword))) {
+      setAuthMessage("#password-message", "原密码不正确。");
+      return;
+    }
+    if (newPassword.length < 6) {
+      setAuthMessage("#password-message", "新密码至少 6 位。");
+      return;
+    }
+    if (newPassword !== confirmPassword) {
+      setAuthMessage("#password-message", "两次输入的新密码不一致。");
+      return;
+    }
+    await savePassword(account.username, newPassword);
+    passwordForm.reset();
+    setAuthMessage("#password-message", "密码已修改。");
+  });
+}
+
+function renderMemberAuthState(account) {
+  const auth = document.querySelector("#member-auth");
+  const privatePanel = document.querySelector("#member-private");
+  const sessionUser = document.querySelector("#member-session-user");
+  const passwordForm = document.querySelector("#password-form");
+  const passwordUsername = document.querySelector("#password-username");
+  if (!auth || !privatePanel) return;
+
+  auth.hidden = Boolean(account);
+  privatePanel.hidden = !account;
+  if (!account) {
+    passwordForm && (passwordForm.hidden = true);
+    if (passwordUsername) passwordUsername.value = "";
+    document.querySelector("#member-report")?.replaceChildren();
+    document.querySelector("#member-progress-tabs")?.replaceChildren();
+    return;
+  }
+
+  if (sessionUser) sessionUser.textContent = `${account.name} 已登录`;
+  if (passwordUsername) passwordUsername.value = account.username;
+  renderMemberTabs();
+}
+
+function renderMemberTabs() {
   const tabs = document.querySelector("#member-progress-tabs");
   if (!tabs) return;
   tabs.replaceChildren(...memberProgress.map((member, index) => {
@@ -628,6 +864,55 @@ function setupMemberProgress() {
     return button;
   }));
   renderMemberProgress(memberProgress[0]?.name);
+}
+
+function findAccount(value) {
+  const normalized = value.trim().toLowerCase();
+  return memberAccounts.find((account) => account.username === normalized || account.name === value.trim());
+}
+
+function getActiveAccount() {
+  const username = sessionStorage.getItem(authSessionKey);
+  return memberAccounts.find((account) => account.username === username) || null;
+}
+
+async function verifyPassword(username, password) {
+  const hashes = readPasswordHashes();
+  const expected = hashes[username] || await hashPassword(username, "123456");
+  return expected === await hashPassword(username, password);
+}
+
+async function savePassword(username, password) {
+  const hashes = readPasswordHashes();
+  hashes[username] = await hashPassword(username, password);
+  localStorage.setItem(authPasswordKey, JSON.stringify(hashes));
+}
+
+function readPasswordHashes() {
+  try {
+    return JSON.parse(localStorage.getItem(authPasswordKey) || "{}");
+  } catch {
+    return {};
+  }
+}
+
+async function hashPassword(username, password) {
+  const source = `yipaijihui:${username}:${password}`;
+  if (window.crypto?.subtle) {
+    const bytes = new TextEncoder().encode(source);
+    const digest = await window.crypto.subtle.digest("SHA-256", bytes);
+    return [...new Uint8Array(digest)].map((byte) => byte.toString(16).padStart(2, "0")).join("");
+  }
+  let hash = 0;
+  for (let index = 0; index < source.length; index += 1) {
+    hash = ((hash << 5) - hash + source.charCodeAt(index)) | 0;
+  }
+  return String(hash);
+}
+
+function setAuthMessage(selector, message) {
+  const target = document.querySelector(selector);
+  if (target) target.textContent = message;
 }
 
 function renderMemberProgress(memberName) {

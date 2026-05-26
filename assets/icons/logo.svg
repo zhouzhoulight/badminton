@@ -1,13 +1,22 @@
 <svg width="96" height="96" viewBox="0 0 96 96" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
-  <title id="title">Yi Pai Ji Hui logo</title>
-  <desc id="desc">A shuttlecock and pose graph mark for an AI badminton coaching project.</desc>
-  <rect x="8" y="8" width="80" height="80" rx="20" fill="#0F9F68"/>
-  <path d="M26 26L53 57" stroke="#F7FFF8" stroke-width="5" stroke-linecap="round"/>
-  <path d="M36 21L62 48" stroke="#D9FF73" stroke-width="4" stroke-linecap="round"/>
-  <path d="M49 18L69 39" stroke="#F7FFF8" stroke-width="4" stroke-linecap="round"/>
-  <path d="M23 69C31 58 45 50 60 50C68 50 75 52 80 56" stroke="#F7FFF8" stroke-width="4" stroke-linecap="round"/>
-  <circle cx="32" cy="62" r="5" fill="#D9FF73"/>
-  <circle cx="50" cy="53" r="4" fill="#F7FFF8"/>
-  <circle cx="68" cy="53" r="4" fill="#D9FF73"/>
-  <path d="M32 62L50 53L68 53" stroke="#10251D" stroke-width="2.5" stroke-linecap="round"/>
+  <title id="title">一拍即慧 logo</title>
+  <desc id="desc">A minimal white badminton shuttlecock on a green rounded-square background.</desc>
+  <defs>
+    <linearGradient id="bg" x1="20" y1="12" x2="78" y2="88" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#14B978"/>
+      <stop offset="1" stop-color="#08764B"/>
+    </linearGradient>
+  </defs>
+  <rect x="8" y="8" width="80" height="80" rx="22" fill="url(#bg)"/>
+  <g transform="rotate(-24 48 48)">
+    <ellipse cx="65" cy="69" rx="12" ry="10" fill="#F8FFF8"/>
+    <path d="M51 63C55 59 63 58 70 62" stroke="#F8FFF8" stroke-width="5" stroke-linecap="round"/>
+    <path d="M23 25C35 18 58 19 72 29" stroke="#F8FFF8" stroke-width="5" stroke-linecap="round"/>
+    <path d="M25 27L53 63" stroke="#F8FFF8" stroke-width="5" stroke-linecap="round"/>
+    <path d="M38 20L57 62" stroke="#F8FFF8" stroke-width="5" stroke-linecap="round"/>
+    <path d="M51 21L61 62" stroke="#F8FFF8" stroke-width="5" stroke-linecap="round"/>
+    <path d="M64 25L66 63" stroke="#F8FFF8" stroke-width="5" stroke-linecap="round"/>
+    <path d="M28 31C38 28 58 29 68 35L65 61C61 59 56 59 53 62L28 31Z" fill="#F8FFF8" fill-opacity="0.16"/>
+    <path d="M58 69H72" stroke="#08764B" stroke-width="2.4" stroke-linecap="round" opacity="0.22"/>
+  </g>
 </svg>

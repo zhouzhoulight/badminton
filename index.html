@@ -81,7 +81,10 @@
         <div class="container split-layout">
           <div>
             <p class="eyebrow">Project Snapshot</p>
-            <h2 id="overview-title">从“看动作”走向“纠错误”</h2>
+            <h2 id="overview-title">
+              <span class="overview-title-line">从“看动作”走向</span>
+              <span class="overview-title-line no-break">“纠错误”</span>
+            </h2>
           </div>
           <div class="text-column">
             <p>项目围绕人体姿态估计、动作自适应击球帧检测、ST-GCN 时空特征学习和层次化错误分类，构建“采集、分析、反馈、跟踪”的训练闭环。</p>
@@ -270,6 +273,8 @@
               <div class="camera-view">
                 <canvas id="skeleton-canvas" width="360" height="420" aria-label="骨骼识别动画"></canvas>
                 <div class="scan-line" aria-hidden="true"></div>
+                <div class="shuttle-trail" aria-hidden="true"></div>
+                <div class="coco-badge" aria-hidden="true">COCO17</div>
               </div>
               <div class="result-card">
                 <span id="result-label">待检测</span>
@@ -378,6 +383,8 @@
             </article>
           </div>
 
+          <div class="milestone-board" id="milestone-board" aria-label="项目里程碑"></div>
+
           <div class="week-rail" id="week-rail" aria-label="52 周进度列表"></div>
 
           <div class="week-detail">
@@ -393,14 +400,58 @@
           </div>
 
           <section class="member-progress" aria-labelledby="member-progress-title">
-            <div class="member-progress-head">
-              <div>
-                <p class="eyebrow">Member Updates</p>
-                <h3 id="member-progress-title">成员进度填写</h3>
+            <div class="member-auth" id="member-auth">
+              <div class="member-auth-copy">
+                <p class="eyebrow">Member Login</p>
+                <h3>组员登录</h3>
+                <p>仅项目组成员登录后可查看每位成员的周进度。账号为姓名拼音，初始密码为 123456。</p>
               </div>
-              <div class="member-progress-tabs" id="member-progress-tabs" role="group" aria-label="选择成员进度"></div>
+              <form class="auth-form" id="login-form">
+                <label for="login-username">账号</label>
+                <input id="login-username" name="username" autocomplete="username" placeholder="例如 zhouzhou" required />
+                <label for="login-password">密码</label>
+                <input id="login-password" name="password" type="password" autocomplete="current-password" placeholder="初始密码 123456" required />
+                <button class="button primary" type="submit">登录查看进度</button>
+                <p class="auth-message" id="auth-message" aria-live="polite"></p>
+              </form>
             </div>
-            <div class="member-report" id="member-report" aria-live="polite"></div>
+
+            <div class="member-private" id="member-private" hidden>
+              <div class="member-progress-head">
+                <div>
+                  <p class="eyebrow">Member Updates</p>
+                  <h3 id="member-progress-title">成员进度填写</h3>
+                </div>
+                <div class="member-progress-actions">
+                  <div class="member-session">
+                    <span id="member-session-user">--</span>
+                    <button type="button" id="password-toggle">修改密码</button>
+                    <button type="button" id="logout-button">退出</button>
+                  </div>
+                  <div class="member-progress-tabs" id="member-progress-tabs" role="group" aria-label="选择成员进度"></div>
+                </div>
+              </div>
+
+              <form class="password-form" id="password-form" hidden>
+                <input id="password-username" class="visually-hidden" name="username" autocomplete="username" readonly tabindex="-1" aria-hidden="true" />
+                <div class="auth-field">
+                  <label for="old-password">原密码</label>
+                  <input id="old-password" name="oldPassword" type="password" autocomplete="current-password" required />
+                </div>
+                <div class="auth-field">
+                  <label for="new-password">新密码</label>
+                  <input id="new-password" name="newPassword" type="password" autocomplete="new-password" minlength="6" required />
+                </div>
+                <div class="auth-field">
+                  <label for="confirm-password">确认新密码</label>
+                  <input id="confirm-password" name="confirmPassword" type="password" autocomplete="new-password" minlength="6" required />
+                </div>
+                <button class="button secondary" type="submit">保存新密码</button>
+                <p class="auth-message" id="password-message" aria-live="polite"></p>
+              </form>
+
+              <div class="member-report" id="member-report" aria-live="polite"></div>
+            </div>
           </section>
         </div>
       </section>
@@ -423,17 +474,24 @@
           </div>
         </div>
 
-        <div class="container team-filters" role="group" aria-label="团队筛选">
-          <button class="active" data-filter="all">全部</button>
-          <button data-filter="algorithm">算法</button>
-          <button data-filter="frontend">开发</button>
-          <button data-filter="data">数据</button>
-          <button data-filter="testing">测试</button>
-          <button data-filter="docs">文档</button>
-          <button data-filter="hardware">硬件</button>
+        <div class="container team-members-panel">
+          <div class="team-filters" role="group" aria-label="团队筛选">
+            <button class="active" data-filter="all">全部</button>
+            <button data-filter="algorithm">算法</button>
+            <button data-filter="frontend">开发</button>
+            <button data-filter="data">数据</button>
+            <button data-filter="testing">测试</button>
+            <button data-filter="docs">文档</button>
+            <button data-filter="hardware">硬件</button>
+          </div>
+
+          <div class="team-grid" id="team-grid" aria-live="polite"></div>
         </div>
 
-        <div class="container team-grid" id="team-grid" aria-live="polite"></div>
+        <div class="container deliverables-head">
+          <p class="eyebrow">Deliverables</p>
+          <h3>预期成果</h3>
+        </div>
 
         <div class="container deliverables" aria-label="预期成果">
           <article>
