@@ -3,519 +3,330 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="一拍即慧项目展示网站：基于时空图卷积的羽毛球多动作错误检测与个性化训练系统。" />
-    <title>一拍即慧｜羽毛球多动作错误检测与个性化训练系统</title>
-    <link rel="icon" href="./assets/icons/logo.svg" type="image/svg+xml" />
-    <link rel="stylesheet" href="./styles.css" />
+    <meta name="description" content="一拍即慧：基于 RTMPose 与 ST-GCN 的 AI 羽毛球动作纠错系统，同时用于大创项目过程记录与团队协作展示。" />
+    <title>一拍即慧｜AI 羽毛球动作纠错与团队协作平台</title>
+    <link rel="icon" href="./assets/icons/logo-shuttle.png?v=20260527" type="image/png" />
+    <link rel="stylesheet" href="./styles.css?v=20260528-soft-green-2" />
   </head>
   <body>
     <header class="site-header" data-elevated="false">
       <nav class="nav-shell" aria-label="主导航">
         <a class="brand" href="#home" aria-label="回到首页">
-          <img src="./assets/icons/logo.svg" alt="" />
+          <img src="./assets/icons/logo-shuttle.png?v=20260527" alt="" />
           <span>一拍即慧</span>
         </a>
-        <div class="nav-links">
+        <button class="menu-toggle" id="menu-toggle" type="button" aria-label="打开导航菜单" aria-expanded="false">
+          <span></span>
+          <span></span>
+        </button>
+        <div class="nav-links" id="nav-links">
           <a href="#home">首页</a>
-          <a href="#background">项目背景</a>
+          <a href="#overview">项目概览</a>
           <a href="#technology">技术方案</a>
+          <a href="#demo">系统演示</a>
           <a href="#progress">当前进度</a>
-          <a href="#team">团队介绍</a>
+          <a href="#team">团队成员</a>
+          <a class="login-link" href="#workspace">成员登录</a>
         </div>
-        <a class="nav-action" href="#demo" aria-label="查看系统演示">
-          <svg viewBox="0 0 24 24" aria-hidden="true">
-            <path d="M8 5v14l11-7L8 5Z" />
-          </svg>
-          系统演示
-        </a>
       </nav>
     </header>
 
     <main>
-      <section class="hero section-band" id="home" aria-labelledby="hero-title">
-        <div class="hero-media" aria-hidden="true">
-          <img src="./assets/images/hero-ai-badminton.png" alt="" />
-        </div>
+      <section class="hero" id="home" aria-labelledby="hero-title">
+        <div class="hero-orbit" aria-hidden="true"></div>
         <div class="container hero-grid">
-          <div class="hero-copy">
-            <p class="eyebrow">国家级大学生创新训练计划项目</p>
-            <h1 id="hero-title">一拍即慧</h1>
-            <p class="hero-subtitle">面向移动端的羽毛球动作错误检测与个性化训练系统，让初学者在一次挥拍后获得清晰、可解释、可持续改进的训练反馈。</p>
-            <div class="hero-actions" aria-label="首页操作">
-              <a class="button primary" href="#demo">
-                <svg viewBox="0 0 24 24" aria-hidden="true">
-                  <path d="M12 5v14M5 12h14" />
-                </svg>
-                体验交互原型
-              </a>
-              <a class="button secondary" href="#progress">
-                <svg viewBox="0 0 24 24" aria-hidden="true">
-                  <path d="M4 19V5M4 19h16M8 16v-5M13 16V8M18 16v-9" />
-                </svg>
-                查看周进度
-              </a>
+          <div class="hero-copy reveal">
+            <p class="eyebrow">AI Badminton Coach</p>
+            <h1 id="hero-title">一拍即慧<span>AI 羽毛球动作纠错系统</span></h1>
+            <p class="hero-subtitle">基于 RTMPose 姿态估计与 ST-GCN 时空图卷积，自动识别羽毛球动作、检测细粒度错误，并生成个性化训练反馈。</p>
+            <div class="hero-actions">
+              <a class="button primary" href="#technology">查看技术方案</a>
+              <a class="button secondary" href="#demo">体验系统演示</a>
+              <a class="button ghost" href="#workspace">成员登录</a>
+            </div>
+            <dl class="hero-metrics" aria-label="项目指标">
+              <div><dt>3</dt><dd>类核心动作</dd></div>
+              <div><dt>8</dt><dd>类典型错误</dd></div>
+              <div><dt>17</dt><dd>个 COCO 关键点</dd></div>
+              <div><dt>52</dt><dd>周研发计划</dd></div>
+              <div><dt>7</dt><dd>位协作成员</dd></div>
+            </dl>
+          </div>
+
+          <div class="hero-visual reveal" aria-label="手机 App 与 AI 分析面板示意">
+            <div class="floating-card analysis-float">
+              <small>Motion Analysis</small>
+              <strong>击球点过低</strong>
+              <b>92%</b>
+            </div>
+            <div class="phone-mockup">
+              <div class="phone-top">
+                <span>一拍即慧</span>
+                <strong>高远球</strong>
+              </div>
+              <div class="phone-stage">
+                <canvas id="hero-canvas" width="360" height="420" aria-label="COCO17 骨架关键点动画"></canvas>
+                <span class="scan-line"></span>
+                <span class="coco-badge">COCO17</span>
+              </div>
+              <div class="phone-result">
+                <span>动作识别：高远球</span>
+                <strong>错误检测：击球点过低</strong>
+                <p>提高击球点，强化转体发力。</p>
+              </div>
+            </div>
+            <div class="floating-card plan-float">
+              <small>Personalized Plan</small>
+              <strong>本周重点</strong>
+              <p>侧身引拍 · 高点击球 · 蹬转发力</p>
             </div>
           </div>
-          <aside class="hero-panel" aria-label="项目关键指标">
-            <div>
-              <span class="metric-value">3</span>
-              <span class="metric-label">核心动作</span>
+        </div>
+      </section>
+
+      <section class="section overview" id="overview" aria-labelledby="overview-title">
+        <div class="container section-heading reveal">
+          <p class="eyebrow">Project Overview</p>
+          <h2 id="overview-title">项目概览</h2>
+          <p>拍下动作，系统自动识别问题，并给出下一步训练建议。网站同时记录研发过程、团队分工和成员周进展。</p>
+        </div>
+        <div class="container overview-grid">
+          <article class="info-card reveal"><span>01</span><h3>项目定位</h3><p>AI 羽毛球动作错误检测与个性化训练系统。</p></article>
+          <article class="info-card reveal"><span>02</span><h3>核心能力</h3><p>动作识别、错误检测、个性化反馈、训练记录。</p></article>
+          <article class="info-card reveal"><span>03</span><h3>应用场景</h3><p>校园羽毛球训练、初学者自我纠错、社团训练辅助。</p></article>
+          <article class="info-card reveal"><span>04</span><h3>项目属性</h3><p>国家级大学生创新训练计划项目，周期 2026.05 - 2027.05。</p></article>
+        </div>
+      </section>
+
+      <section class="section technology" id="technology" aria-labelledby="technology-title">
+        <div class="container section-heading reveal">
+          <p class="eyebrow">Technical Route</p>
+          <h2 id="technology-title">核心技术链路</h2>
+          <p>系统把人体关节看作一张随时间变化的图，学习击球动作中的关键差异，而不是只做普通运动记录。</p>
+        </div>
+        <div class="container flow-map" aria-label="核心技术流程">
+          <article class="flow-node reveal"><span>01</span><h3>视频输入</h3><p>用户通过手机录制动作。</p></article>
+          <article class="flow-node reveal"><span>02</span><h3>RTMPose</h3><p>提取 17 个 COCO 人体关键点。</p></article>
+          <article class="flow-node reveal"><span>03</span><h3>击球帧检测</h3><p>使用腕部速度、肘部角速度、抛球轨迹定位关键帧。</p></article>
+          <article class="flow-node reveal"><span>04</span><h3>ST-GCN</h3><p>对骨架序列进行时空图卷积建模。</p></article>
+          <article class="flow-node reveal"><span>05</span><h3>层次分类器</h3><p>先动作识别，后错误检测。</p></article>
+          <article class="flow-node reveal"><span>06</span><h3>训练建议</h3><p>结合用户档案生成长期训练反馈。</p></article>
+        </div>
+        <div class="container tech-grid">
+          <article class="tech-card reveal"><p class="eyebrow">Pose</p><h3>RTMPose 关键点提取</h3><p>从移动端视频中实时提取 COCO-17 关键点，并保留坐标与置信度。</p><div class="tag-row"><span>COCO-17</span><span>Mobile</span><span>Keypoints</span></div></article>
+          <article class="tech-card reveal"><p class="eyebrow">Temporal</p><h3>动作自适应击球帧定位</h3><p>高远球关注腕部峰值，发球动作结合抛球轨迹与肘部角速度。</p><div class="tag-row"><span>Hit Frame</span><span>Motion Peak</span></div></article>
+          <article class="tech-card dark reveal"><p class="eyebrow">Graph</p><h3>ST-GCN 骨架时空特征学习</h3><p>在空间维度学习关节协同关系，在时间维度学习动作动态差异。</p><div class="tag-row"><span>ST-GCN</span><span>Skeleton Graph</span></div></article>
+          <article class="tech-card reveal"><p class="eyebrow">Classifier</p><h3>层次化动作-错误分类</h3><p>先识别高远球、正手发球、反手发球，再进入对应错误分支。</p><div class="tag-row"><span>Fine-grained</span><span>Error Detection</span></div></article>
+        </div>
+      </section>
+
+      <section class="section demo" id="demo" aria-labelledby="demo-title">
+        <div class="container section-heading reveal">
+          <p class="eyebrow">Live Demo</p>
+          <h2 id="demo-title">系统演示</h2>
+          <p>前端模拟一次 AI 动作分析：选择动作、启动检测、查看错误与训练建议，不请求后端接口。</p>
+        </div>
+        <div class="container demo-grid">
+          <aside class="demo-controls reveal">
+            <span class="panel-label">动作类型</span>
+            <div class="action-list" role="group" aria-label="选择动作">
+              <button class="active" type="button" data-action="clear"><strong>高远球</strong><span>击球点与转体发力</span></button>
+              <button type="button" data-action="forehand"><strong>正手发球</strong><span>手腕内旋与抛球稳定</span></button>
+              <button type="button" data-action="backhand"><strong>反手发球</strong><span>拍面角度与击球点控制</span></button>
             </div>
-            <div>
-              <span class="metric-value">8</span>
-              <span class="metric-label">典型错误</span>
+            <button class="button primary full" id="run-analysis" type="button">开始检测</button>
+          </aside>
+          <div class="demo-phone-wrap reveal">
+            <div class="phone-mockup demo-phone">
+              <div class="phone-top"><span>AI Analysis</span><strong id="demo-action-name">高远球</strong></div>
+              <div class="phone-stage">
+                <canvas id="skeleton-canvas" width="360" height="420" aria-label="系统演示骨架动画"></canvas>
+                <span class="scan-line"></span>
+                <span class="coco-badge">Hit Frame</span>
+              </div>
+              <ol class="analysis-steps" id="analysis-steps" aria-label="分析步骤">
+                <li class="active">正在提取关键点</li>
+                <li>正在定位击球帧</li>
+                <li>正在进行 ST-GCN 推理</li>
+                <li>正在生成训练建议</li>
+              </ol>
             </div>
-            <div>
-              <span class="metric-value">52</span>
-              <span class="metric-label">周进度追踪</span>
+          </div>
+          <aside class="result-panel reveal" aria-live="polite">
+            <span class="panel-label">分析结果</span>
+            <h3 id="result-action">高远球</h3>
+            <div class="result-row"><span>主要错误</span><strong id="result-main">击球点过低</strong></div>
+            <div class="result-row"><span>次要问题</span><strong id="result-secondary">转体不足</strong></div>
+            <div class="confidence">
+              <div><span>置信度</span><strong id="confidence-value">92%</strong></div>
+              <div class="confidence-track"><i id="confidence-bar"></i></div>
             </div>
-            <div>
-              <span class="metric-value">1800</span>
-              <span class="metric-label">预期有效样本</span>
-            </div>
+            <div class="advice-box"><span>个性化建议</span><p id="result-advice">提高击球点，提前完成侧身引拍，强化蹬转发力。</p></div>
           </aside>
         </div>
       </section>
 
-      <section class="overview section-band" id="overview" aria-labelledby="overview-title">
-        <div class="container split-layout">
-          <div>
-            <p class="eyebrow">Project Snapshot</p>
-            <h2 id="overview-title">
-              <span class="overview-title-line">从“看动作”走向</span>
-              <span class="overview-title-line no-break">“纠错误”</span>
-            </h2>
-          </div>
-          <div class="text-column">
-            <p>项目围绕人体姿态估计、动作自适应击球帧检测、ST-GCN 时空特征学习和层次化错误分类，构建“采集、分析、反馈、跟踪”的训练闭环。</p>
-            <p>网站第一版服务于老师和项目参与者：既能快速了解项目价值，也能持续查看每周推进状态、技术模块进展和团队分工。</p>
-          </div>
-        </div>
-        <div class="container info-strip" aria-label="项目信息">
-          <article>
-            <span>项目周期</span>
-            <strong>2026.05 - 2027.05</strong>
-          </article>
-          <article>
-            <span>项目级别</span>
-            <strong>国家级创新训练项目</strong>
-          </article>
-          <article>
-            <span>指导教师</span>
-            <strong>李月龙 教授</strong>
-          </article>
-          <article>
-            <span>建设目标</span>
-            <strong>移动端 App 原型、软著、开源数据集与论文</strong>
-          </article>
-        </div>
-      </section>
-
-      <section class="background section-band" id="background" aria-labelledby="background-title">
-        <div class="container section-heading">
-          <p class="eyebrow">Why It Matters</p>
-          <h2 id="background-title">项目背景</h2>
-          <p>羽毛球初学者常见的问题不是“没有录像”，而是录像之后仍然不知道哪里错、如何改、下一周练什么。</p>
-        </div>
-        <div class="container pain-grid">
-          <article class="pain-card">
-            <span class="pain-index">01</span>
-            <h3>专业指导成本高</h3>
-            <p>普通学生难以长期获得稳定教练反馈，训练质量容易被课时和费用限制。</p>
-            <div class="bar-track"><span style="--bar: 82%"></span></div>
-          </article>
-          <article class="pain-card">
-            <span class="pain-index">02</span>
-            <h3>动作错误难定位</h3>
-            <p>击球点、转体、手腕发力等细节瞬间发生，仅靠回放很难形成明确判断。</p>
-            <div class="bar-track"><span style="--bar: 76%"></span></div>
-          </article>
-          <article class="pain-card">
-            <span class="pain-index">03</span>
-            <h3>训练反馈不连续</h3>
-            <p>多数运动 App 停留在记录层面，缺少历史错误统计和按周推进的训练计划。</p>
-            <div class="bar-track"><span style="--bar: 69%"></span></div>
-          </article>
-        </div>
-        <div class="container innovation-grid" aria-label="创新点">
-          <article>
-            <h3>细粒度错误检测</h3>
-            <p>从动作类别识别进一步走向动作质量评估，定位手腕、击球点、转体等关键错误。</p>
-          </article>
-          <article>
-            <h3>移动端轻量化</h3>
-            <p>结合 RTMPose、模型量化和关键点平滑，让算法具备走向真实移动设备的可行性。</p>
-          </article>
-          <article>
-            <h3>层次化分类策略</h3>
-            <p>先识别动作，再进入对应错误分支，降低多动作多错误联合学习的任务耦合。</p>
-          </article>
-          <article>
-            <h3>个性化训练闭环</h3>
-            <p>按历史错误频率生成本周训练重点，支持从一次分析到长期陪伴式改进。</p>
-          </article>
-        </div>
-      </section>
-
-      <section class="technology section-band" id="technology" aria-labelledby="technology-title">
-        <div class="container section-heading">
-          <p class="eyebrow">Technical Route</p>
-          <h2 id="technology-title">技术方案</h2>
-          <p>用评委能快速看懂的方式呈现核心链路：视频输入后，系统先抽取骨骼关键点，再学习时空动作特征，最终输出错误类型和训练建议。</p>
-        </div>
-
-        <div class="container route-board">
-          <div class="route-diagram" aria-label="技术路线图">
-            <button class="route-node active" data-tech="pose">
-              <span>01</span>
-              RTMPose 关键点
-            </button>
-            <button class="route-node" data-tech="hit">
-              <span>02</span>
-              击球帧检测
-            </button>
-            <button class="route-node" data-tech="stgcn">
-              <span>03</span>
-              ST-GCN 特征
-            </button>
-            <button class="route-node" data-tech="classifier">
-              <span>04</span>
-              层次分类器
-            </button>
-            <button class="route-node" data-tech="coach">
-              <span>05</span>
-              个性化反馈
-            </button>
-            <button class="route-node" data-tech="mobile">
-              <span>06</span>
-              移动端集成
-            </button>
-          </div>
-
-          <article class="route-detail" aria-live="polite">
-            <p class="eyebrow" id="tech-kicker">模块 01</p>
-            <h3 id="tech-title">轻量化姿态估计</h3>
-            <p id="tech-copy">从移动端摄像头视频流中实时提取 17 个 COCO 格式人体关键点，并通过卡尔曼滤波抑制连续帧抖动。</p>
-            <ul id="tech-points"></ul>
-          </article>
-        </div>
-
-        <div class="container architecture" aria-label="系统架构图">
-          <div class="arch-lane">
-            <h3>输入层</h3>
-            <span>手机摄像头</span>
-            <span>本地视频</span>
-            <span>训练档案</span>
-          </div>
-          <div class="arch-lane">
-            <h3>感知层</h3>
-            <span>关键点提取</span>
-            <span>置信度筛选</span>
-            <span>平滑滤波</span>
-          </div>
-          <div class="arch-lane strong">
-            <h3>智能层</h3>
-            <span>击球帧定位</span>
-            <span>ST-GCN 建模</span>
-            <span>动作-错误解耦</span>
-          </div>
-          <div class="arch-lane">
-            <h3>反馈层</h3>
-            <span>错误部位高亮</span>
-            <span>语音提示</span>
-            <span>周训练计划</span>
-          </div>
-        </div>
-      </section>
-
-      <section class="demo section-band" id="demo" aria-labelledby="demo-title">
-        <div class="container section-heading">
-          <p class="eyebrow">Interactive Prototype</p>
-          <h2 id="demo-title">系统演示</h2>
-          <p>交互原型聚焦老师最关心的判定链路：选动作、跑分析、看错误、给建议。</p>
-        </div>
-
-        <div class="container demo-layout">
-          <section class="demo-controls" aria-label="演示控制台">
-            <div class="control-group">
-              <span class="control-label">动作类型</span>
-              <div class="segmented" role="group" aria-label="选择动作类型">
-                <button class="active" data-action="clear">高远球</button>
-                <button data-action="forehand">正手发球</button>
-                <button data-action="backhand">反手发球</button>
-              </div>
-            </div>
-
-            <div class="control-group">
-              <span class="control-label">分析流程</span>
-              <ol class="analysis-steps">
-                <li class="active" data-step="0">采集骨骼序列</li>
-                <li data-step="1">定位击球帧</li>
-                <li data-step="2">识别动作类别</li>
-                <li data-step="3">输出错误建议</li>
-              </ol>
-            </div>
-
-            <button class="button primary wide" id="run-analysis">
-              <svg viewBox="0 0 24 24" aria-hidden="true">
-                <path d="M8 5v14l11-7L8 5Z" />
-              </svg>
-              开始检测
-            </button>
-          </section>
-
-          <section class="phone-demo" aria-label="移动端界面模拟">
-            <div class="phone-shell">
-              <div class="phone-status">
-                <span>一拍即慧</span>
-                <strong id="demo-mode">高远球</strong>
-              </div>
-              <div class="camera-view">
-                <canvas id="skeleton-canvas" width="360" height="420" aria-label="骨骼识别动画"></canvas>
-                <div class="scan-line" aria-hidden="true"></div>
-                <div class="shuttle-trail" aria-hidden="true"></div>
-                <div class="coco-badge" aria-hidden="true">COCO17</div>
-              </div>
-              <div class="result-card">
-                <span id="result-label">待检测</span>
-                <strong id="result-title">准备分析动作</strong>
-                <p id="result-copy">选择动作后运行检测，系统会模拟输出错误类型、置信度与个性化训练建议。</p>
-                <div class="confidence">
-                  <span>置信度</span>
-                  <div class="confidence-track"><b id="confidence-bar"></b></div>
-                  <strong id="confidence-value">--</strong>
-                </div>
-              </div>
-            </div>
-          </section>
-
-          <section class="coach-panel" aria-label="训练建议">
-            <h3>本周重点练习</h3>
-            <div id="coach-tags" class="tag-list"></div>
-            <p id="coach-copy">系统会依据错误出现次数与用户水平，生成分解练习、专项强化和完整动作连贯性训练建议。</p>
-            <div class="mini-chart" aria-label="错误频率">
-              <span style="--height: 35%"></span>
-              <span style="--height: 72%"></span>
-              <span style="--height: 48%"></span>
-              <span style="--height: 61%"></span>
-              <span style="--height: 38%"></span>
-            </div>
-          </section>
-        </div>
-      </section>
-
-      <section class="validation section-band" id="validation" aria-labelledby="validation-title">
-        <div class="container section-heading">
-          <p class="eyebrow">Evaluation & Roadmap</p>
-          <h2 id="validation-title">评估指标、应用场景与未来规划</h2>
-          <p>当前阶段以研究设计和原型验证为主，实验数据上线后将持续更新指标看板，避免用未经实测的数据装饰页面。</p>
-        </div>
-
-        <div class="container validation-grid">
-          <article class="metric-board">
-            <h3>拟跟踪实验指标</h3>
-            <div class="metric-row">
-              <span>动作识别准确率</span>
-              <strong>待首批数据验证</strong>
-            </div>
-            <div class="metric-row">
-              <span>错误检测 F1 值</span>
-              <strong>待三动作分支训练</strong>
-            </div>
-            <div class="metric-row">
-              <span>击球帧定位准确率</span>
-              <strong>低于 80% 启用 1D-CNN 备选</strong>
-            </div>
-            <div class="metric-row">
-              <span>移动端推理延迟</span>
-              <strong>量化部署阶段测试</strong>
-            </div>
-          </article>
-
-          <article class="scenario-board">
-            <h3>应用场景</h3>
-            <ul>
-              <li>天津工业大学羽毛球社团训练与用户测试</li>
-              <li>初学者课后自主纠错与周训练计划</li>
-              <li>体育教学中的动作质量辅助评估</li>
-              <li>扩展至网球、篮球等骨骼动作分析任务</li>
-            </ul>
-          </article>
-
-          <article class="roadmap-board">
-            <h3>未来规划</h3>
-            <div class="roadmap-step">
-              <span>阶段一</span>
-              <p>优先完成高远球模块，跑通采集、关键帧、识别、纠错链路。</p>
-            </div>
-            <div class="roadmap-step">
-              <span>阶段二</span>
-              <p>扩展正手发球与反手发球，完善个性化建议与历史记录。</p>
-            </div>
-            <div class="roadmap-step">
-              <span>阶段三</span>
-              <p>整理软著、论文、开源代码与可复现数据集。</p>
-            </div>
-          </article>
-        </div>
-      </section>
-
-      <section class="progress section-band" id="progress" aria-labelledby="progress-title">
-        <div class="container section-heading">
-          <p class="eyebrow">Weekly Progress</p>
+      <section class="section progress" id="progress" aria-labelledby="progress-title">
+        <div class="container section-heading reveal">
+          <p class="eyebrow">Project Dashboard</p>
           <h2 id="progress-title">当前进度</h2>
-          <p>项目周期为 2026 年 5 月至 2027 年 5 月，页面按 52 周生成进度节点，适合用于组会展示和阶段复盘。</p>
+          <p>项目按 52 周追踪研发进展，默认展示当前周次、当前阶段、完成比例和本周重点任务。</p>
         </div>
-
-        <div class="container progress-dashboard">
-          <div class="progress-summary" aria-label="进度概览">
-            <article>
-              <span>当前周次</span>
-              <strong id="current-week">--</strong>
-            </article>
-            <article>
-              <span>当前阶段</span>
-              <strong id="current-phase">--</strong>
-            </article>
-            <article>
-              <span>完成比例</span>
-              <strong id="progress-percent">--</strong>
-            </article>
+        <div class="container dashboard">
+          <div class="status-grid" aria-label="当前进度概览">
+            <article class="status-card"><span>当前周次</span><strong id="current-week">--</strong></article>
+            <article class="status-card"><span>当前阶段</span><strong id="current-phase">--</strong></article>
+            <article class="status-card"><span>完成比例</span><strong id="progress-percent">--</strong></article>
+            <article class="status-card accent"><span>本周重点任务</span><strong id="current-focus">读取进度中</strong></article>
           </div>
-
-          <div class="milestone-board" id="milestone-board" aria-label="项目里程碑"></div>
-
-          <div class="week-rail" id="week-rail" aria-label="52 周进度列表"></div>
-
-          <div class="week-detail">
-            <article class="week-main" aria-live="polite">
+          <div class="phase-board" id="phase-board" aria-label="研发阶段时间轴"></div>
+          <details class="week-drawer" open>
+            <summary>展开 52 周任务追踪</summary>
+            <div class="week-rail" id="week-rail" aria-label="52 周进度节点"></div>
+            <article class="week-detail" aria-live="polite">
               <p class="eyebrow" id="week-kicker">Week --</p>
               <h3 id="week-title">读取进度中</h3>
               <p id="week-copy">正在生成项目周计划。</p>
-              <div class="week-meta">
-                <span id="week-status">--</span>
-                <span id="week-output">--</span>
-              </div>
+              <div class="week-meta"><span id="week-status">--</span><span id="week-output">--</span></div>
             </article>
-          </div>
-
-          <section class="member-progress" aria-labelledby="member-progress-title">
-            <div class="member-auth" id="member-auth">
-              <div class="member-auth-copy">
-                <p class="eyebrow">Member Login</p>
-                <h3>组员登录</h3>
-                <p>仅项目组成员登录后可查看每位成员的周进度。账号为姓名拼音，初始密码为 123456。</p>
-              </div>
-              <form class="auth-form" id="login-form">
-                <label for="login-username">账号</label>
-                <input id="login-username" name="username" autocomplete="username" placeholder="例如 zhouzhou" required />
-                <label for="login-password">密码</label>
-                <input id="login-password" name="password" type="password" autocomplete="current-password" placeholder="初始密码 123456" required />
-                <button class="button primary" type="submit">登录查看进度</button>
-                <p class="auth-message" id="auth-message" aria-live="polite"></p>
-              </form>
-            </div>
-
-            <div class="member-private" id="member-private" hidden>
-              <div class="member-progress-head">
-                <div>
-                  <p class="eyebrow">Member Updates</p>
-                  <h3 id="member-progress-title">成员进度填写</h3>
-                </div>
-                <div class="member-progress-actions">
-                  <div class="member-session">
-                    <span id="member-session-user">--</span>
-                    <button type="button" id="password-toggle">修改密码</button>
-                    <button type="button" id="logout-button">退出</button>
-                  </div>
-                  <div class="member-progress-tabs" id="member-progress-tabs" role="group" aria-label="选择成员进度"></div>
-                </div>
-              </div>
-
-              <form class="password-form" id="password-form" hidden>
-                <input id="password-username" class="visually-hidden" name="username" autocomplete="username" readonly tabindex="-1" aria-hidden="true" />
-                <div class="auth-field">
-                  <label for="old-password">原密码</label>
-                  <input id="old-password" name="oldPassword" type="password" autocomplete="current-password" required />
-                </div>
-                <div class="auth-field">
-                  <label for="new-password">新密码</label>
-                  <input id="new-password" name="newPassword" type="password" autocomplete="new-password" minlength="6" required />
-                </div>
-                <div class="auth-field">
-                  <label for="confirm-password">确认新密码</label>
-                  <input id="confirm-password" name="confirmPassword" type="password" autocomplete="new-password" minlength="6" required />
-                </div>
-                <button class="button secondary" type="submit">保存新密码</button>
-                <p class="auth-message" id="password-message" aria-live="polite"></p>
-              </form>
-
-              <div class="member-report" id="member-report" aria-live="polite"></div>
-            </div>
-          </section>
+          </details>
         </div>
       </section>
 
-      <section class="team section-band" id="team" aria-labelledby="team-title">
-        <div class="container section-heading">
-          <p class="eyebrow">Team</p>
-          <h2 id="team-title">团队介绍</h2>
-          <p>团队覆盖算法、前端、数据采集、测试验证、文档展示和硬件接口预研，适合推进从研究到原型的完整链路。</p>
-        </div>
-
-        <div class="container mentor-panel">
+      <section class="section team" id="team" aria-labelledby="team-title">
+        <div class="container split-heading reveal">
           <div>
-            <span class="avatar-mark">李</span>
+            <p class="eyebrow">Team</p>
+            <h2 id="team-title">团队成员与分工</h2>
           </div>
-          <div>
-            <p class="eyebrow">指导教师</p>
-            <h3>李月龙 教授</h3>
-            <p>提供 L40 GPU 服务器、每周组会指导、实验设计建议、论文修改与算法研究资源支持。</p>
+          <p>团队覆盖算法、前端、移动端、数据采集、用户测试、文档答辩和硬件接口预研。这里保留成员具体分工，但不展示手机号、学号等敏感信息。</p>
+        </div>
+        <div class="container mentor-card reveal">
+          <span class="avatar">李</span>
+          <div><p class="eyebrow">指导教师</p><h3>李月龙 教授</h3><p>提供 L40 GPU 服务器、每周组会指导、实验设计建议、论文修改与算法研究资源支持。</p></div>
+        </div>
+        <div class="container team-filters" role="group" aria-label="团队筛选">
+          <button class="active" type="button" data-filter="all">全部</button>
+          <button type="button" data-filter="algorithm">算法</button>
+          <button type="button" data-filter="frontend">前端</button>
+          <button type="button" data-filter="data">数据</button>
+          <button type="button" data-filter="testing">测试</button>
+          <button type="button" data-filter="docs">文档</button>
+          <button type="button" data-filter="mobile">移动端</button>
+          <button type="button" data-filter="hardware">硬件</button>
+        </div>
+        <div class="container team-grid" id="team-grid" aria-live="polite"></div>
+      </section>
+
+      <section class="section workspace" id="workspace" aria-labelledby="workspace-title">
+        <div class="container section-heading reveal">
+          <p class="eyebrow">Team Workspace</p>
+          <h2 id="workspace-title">团队工作台</h2>
+          <p>成员登录后可查看个人任务、更新进度、记录本周工作。账号与初始密码请向项目负责人获取。</p>
+        </div>
+        <div class="container workspace-panel">
+          <div class="member-auth" id="member-auth">
+            <div class="auth-copy">
+              <p class="eyebrow">Member Login</p>
+              <h3>成员登录入口</h3>
+              <p>静态 GitHub Pages 环境下使用前端模拟登录，用于项目展示和组内协作演示。</p>
+            </div>
+            <form class="auth-form" id="login-form">
+              <label for="login-username">账号</label>
+              <input id="login-username" name="username" autocomplete="username" placeholder="姓名拼音" required />
+              <label for="login-password">密码</label>
+              <input id="login-password" name="password" type="password" autocomplete="current-password" placeholder="请输入密码" required />
+              <button class="button primary full" type="submit">登录工作台</button>
+              <p class="auth-message" id="auth-message" aria-live="polite"></p>
+            </form>
+          </div>
+
+          <div class="member-private" id="member-private" hidden>
+            <div class="workspace-head">
+              <div><p class="eyebrow">Workspace</p><h3 id="member-session-user">成员工作台</h3><p id="member-session-role">--</p></div>
+              <div class="workspace-actions">
+                <button type="button" id="password-toggle">修改密码</button>
+                <button type="button" id="logout-button">退出</button>
+              </div>
+            </div>
+            <div class="personal-grid">
+              <article><span>本周任务</span><strong id="personal-week-task">--</strong></article>
+              <article><span>已完成任务</span><strong id="personal-done-task">--</strong></article>
+              <article><span>待完成任务</span><strong id="personal-todo-task">--</strong></article>
+            </div>
+            <form class="password-form" id="password-form" hidden>
+              <input id="password-username" class="visually-hidden" name="username" autocomplete="username" readonly tabindex="-1" aria-hidden="true" />
+              <div><label for="old-password">原密码</label><input id="old-password" name="oldPassword" type="password" autocomplete="current-password" required /></div>
+              <div><label for="new-password">新密码</label><input id="new-password" name="newPassword" type="password" autocomplete="new-password" minlength="6" required /></div>
+              <div><label for="confirm-password">确认新密码</label><input id="confirm-password" name="confirmPassword" type="password" autocomplete="new-password" minlength="6" required /></div>
+              <button class="button secondary" type="submit">保存新密码</button>
+              <p class="auth-message" id="password-message" aria-live="polite"></p>
+            </form>
+            <form class="note-form" id="note-form">
+              <label for="task-note">本周工作记录</label>
+              <textarea id="task-note" rows="4" placeholder="记录本周完成、遇到的问题或下周计划"></textarea>
+              <button class="button secondary" type="submit">保存到本机</button>
+              <p class="auth-message" id="note-message" aria-live="polite"></p>
+            </form>
+            <div class="private-work">
+              <div class="private-work-head">
+                <div>
+                  <p class="eyebrow">Internal Updates</p>
+                  <h4>成员工作进展</h4>
+                  <p>以下内容仅在成员登录后显示，用于查看每个人本周完成、下周计划、当前阻塞和负责路线。</p>
+                </div>
+              </div>
+              <div class="work-filters" role="group" aria-label="成员工作筛选">
+                <button class="active" type="button" data-filter="all">全部</button>
+                <button type="button" data-filter="algorithm">算法</button>
+                <button type="button" data-filter="frontend">前端</button>
+                <button type="button" data-filter="data">数据</button>
+                <button type="button" data-filter="testing">测试</button>
+                <button type="button" data-filter="docs">文档</button>
+                <button type="button" data-filter="mobile">移动端</button>
+              </div>
+              <div class="work-grid" id="work-grid" aria-live="polite"></div>
+            </div>
+            <div class="member-tabs" id="member-progress-tabs" role="group" aria-label="选择成员进度"></div>
+            <div class="member-report" id="member-report" aria-live="polite"></div>
           </div>
         </div>
+      </section>
 
-        <div class="container team-members-panel">
-          <div class="team-filters" role="group" aria-label="团队筛选">
-            <button class="active" data-filter="all">全部</button>
-            <button data-filter="algorithm">算法</button>
-            <button data-filter="frontend">开发</button>
-            <button data-filter="data">数据</button>
-            <button data-filter="testing">测试</button>
-            <button data-filter="docs">文档</button>
-            <button data-filter="hardware">硬件</button>
-          </div>
-
-          <div class="team-grid" id="team-grid" aria-live="polite"></div>
+      <section class="section roadmap" id="roadmap" aria-labelledby="roadmap-title">
+        <div class="container section-heading reveal">
+          <p class="eyebrow">Roadmap</p>
+          <h2 id="roadmap-title">研发路线</h2>
+          <p>保留 52 周研发计划，以 6 个阶段展示主要目标和阶段产出。</p>
         </div>
+        <div class="container roadmap-list" id="roadmap-list"></div>
+      </section>
 
-        <div class="container deliverables-head">
+      <section class="section outcomes" id="outcomes" aria-labelledby="outcomes-title">
+        <div class="container section-heading reveal">
           <p class="eyebrow">Deliverables</p>
-          <h3>预期成果</h3>
+          <h2 id="outcomes-title">成果计划</h2>
+          <p>围绕移动端原型、数据集、代码仓库、软著、论文和结题报告形成可展示、可复现的成果。</p>
         </div>
-
-        <div class="container deliverables" aria-label="预期成果">
-          <article>
-            <h3>移动端 App 原型</h3>
-            <p>实现姿态估计、动作识别、错误检测、语音反馈与历史记录查看。</p>
-          </article>
-          <article>
-            <h3>开源数据集</h3>
-            <p>建设三类动作共 1800 次有效击球样本，包含视频、关键点、动作标签与错误标签。</p>
-          </article>
-          <article>
-            <h3>软著与论文</h3>
-            <p>完成系统 V1.0 软件著作权登记，形成研究论文与项目结题报告。</p>
-          </article>
-        </div>
+        <div class="container outcome-grid" id="outcome-grid"></div>
       </section>
     </main>
 
-    <button class="to-top" id="to-top" aria-label="回到顶部">
-      <svg viewBox="0 0 24 24" aria-hidden="true">
-        <path d="M12 19V5M6 11l6-6 6 6" />
-      </svg>
-    </button>
+    <footer class="site-footer">
+      <div class="container footer-grid">
+        <div>
+          <a class="brand footer-brand" href="#home"><img src="./assets/icons/logo-shuttle.png?v=20260527" alt="" /><span>一拍即慧</span></a>
+          <p>AI Badminton Motion Analysis System</p>
+        </div>
+        <div>
+          <p>天津工业大学大学生创新训练计划项目</p>
+          <p>项目周期：2026.05 - 2027.05</p>
+        </div>
+        <a class="footer-link" href="#workspace">团队协作入口</a>
+        <small>Copyright © 2026 一拍即慧 Project Team</small>
+      </div>
+    </footer>
 
-    <script src="./script.js"></script>
+    <script src="./script.js?v=20260528-phase-2"></script>
   </body>
 </html>

@@ -1,22 +1,17 @@
-<svg width="96" height="96" viewBox="0 0 96 96" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
-  <title id="title">一拍即慧 logo</title>
-  <desc id="desc">A minimal white badminton shuttlecock on a green rounded-square background.</desc>
+<svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+  <title id="title">一拍即慧羽毛球图标</title>
+  <desc id="desc">绿色极简羽毛球图标。</desc>
   <defs>
-    <linearGradient id="bg" x1="20" y1="12" x2="78" y2="88" gradientUnits="userSpaceOnUse">
-      <stop stop-color="#14B978"/>
-      <stop offset="1" stop-color="#08764B"/>
+    <linearGradient id="g" x1="133" y1="423" x2="366" y2="96" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#006B36"/>
+      <stop offset=".55" stop-color="#269757"/>
+      <stop offset="1" stop-color="#7DD982"/>
     </linearGradient>
   </defs>
-  <rect x="8" y="8" width="80" height="80" rx="22" fill="url(#bg)"/>
-  <g transform="rotate(-24 48 48)">
-    <ellipse cx="65" cy="69" rx="12" ry="10" fill="#F8FFF8"/>
-    <path d="M51 63C55 59 63 58 70 62" stroke="#F8FFF8" stroke-width="5" stroke-linecap="round"/>
-    <path d="M23 25C35 18 58 19 72 29" stroke="#F8FFF8" stroke-width="5" stroke-linecap="round"/>
-    <path d="M25 27L53 63" stroke="#F8FFF8" stroke-width="5" stroke-linecap="round"/>
-    <path d="M38 20L57 62" stroke="#F8FFF8" stroke-width="5" stroke-linecap="round"/>
-    <path d="M51 21L61 62" stroke="#F8FFF8" stroke-width="5" stroke-linecap="round"/>
-    <path d="M64 25L66 63" stroke="#F8FFF8" stroke-width="5" stroke-linecap="round"/>
-    <path d="M28 31C38 28 58 29 68 35L65 61C61 59 56 59 53 62L28 31Z" fill="#F8FFF8" fill-opacity="0.16"/>
-    <path d="M58 69H72" stroke="#08764B" stroke-width="2.4" stroke-linecap="round" opacity="0.22"/>
-  </g>
+  <path d="M188 311C224 254 302 192 389 116C397 181 366 246 312 286L225 351L188 311Z" fill="url(#g)"/>
+  <path d="M209 357C258 308 319 273 401 223C387 277 349 318 295 344L235 373L209 357Z" fill="url(#g)"/>
+  <path d="M239 387C286 357 333 337 377 306C358 348 323 373 275 389L247 399L239 387Z" fill="url(#g)"/>
+  <path d="M168 330L196 359L174 383C158 400 133 401 117 385C101 369 102 344 119 328L143 306L168 330Z" fill="#05713D"/>
+  <path d="M183 323L216 350" stroke="#F8FBF8" stroke-width="13" stroke-linecap="square"/>
+  <path d="M205 366L239 392" stroke="#F8FBF8" stroke-width="13" stroke-linecap="square"/>
 </svg>
