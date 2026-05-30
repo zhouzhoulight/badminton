@@ -8,6 +8,9 @@ const demoData = {
     confidence: 92,
     advice: "提高击球点，提前完成侧身引拍，强化蹬转发力。",
     focus: [6, 8, 10],
+    focusLabel: "右肩 / 右肘 / 右腕",
+    route: "路线 A 端侧识别 + 路线 B 科研复核",
+    evidence: ["右腕低置信度帧已触发回归修正", "腕部速度峰值出现在较低位置", "击球帧前肩肘打开不足"],
   },
   forehand: {
     name: "正手发球",
@@ -15,7 +18,10 @@ const demoData = {
     secondary: "抛球不稳",
     confidence: 88,
     advice: "保持抛球高度稳定，击球瞬间增加手腕内旋。",
-    focus: [8, 10, 12],
+    focus: [6, 8, 10],
+    focusLabel: "右肩 / 右肘 / 右腕",
+    route: "路线 A 端侧识别",
+    evidence: ["抛球轨迹波动触发稳定性检查", "击球瞬间腕部内旋幅度偏小", "拍面角度变化不稳定"],
   },
   backhand: {
     name: "反手发球",
@@ -24,16 +30,19 @@ const demoData = {
     confidence: 86,
     advice: "控制拍面角度，保持击球点靠近身体前方。",
     focus: [6, 8, 10],
+    focusLabel: "右肩 / 右肘 / 右腕",
+    route: "路线 A 端侧识别",
+    evidence: ["右腕局部轨迹经置信度加权平滑", "击球点相对身体中线偏离", "腕部外翻角度偏大"],
   },
 };
 
 const phasePlan = [
-  { start: 1, end: 8, phase: "预训练与框架搭建", time: "2026.05 - 2026.06", content: "ST-GCN 代码跑通、COCO-17 图结构适配、层次分类器雏形。", output: "ST-GCN 基线、COCO17 数据链路、层次分类设计" },
-  { start: 9, end: 16, phase: "击球帧检测与真实数据接入", time: "2026.07 - 2026.08", content: "击球帧检测接口、真实数据接入、初步微调。", output: "击球帧模块、首批真实视频、初步微调结果" },
-  { start: 17, end: 24, phase: "模型优化", time: "2026.09 - 2026.10", content: "关节相对特征、动态邻接矩阵、数据增强、超参数搜索。", output: "优化版模型、消融实验、指标看板" },
-  { start: 25, end: 34, phase: "移动端部署", time: "2026.11 - 2026.12", content: "ONNX/TFLite 转换、INT8 量化、Android 联调。", output: "端侧推理 Demo、Android 联调版本" },
-  { start: 35, end: 44, phase: "系统集成与用户测试", time: "2027.01 - 2027.02", content: "端到端跑通、用户测试、错误案例分析。", output: "测试报告、反馈清单、迭代计划" },
-  { start: 45, end: 52, phase: "论文撰写与开源", time: "2027.03 - 2027.05", content: "论文投稿、代码开源、结题材料整理。", output: "论文初稿、开源仓库、结题报告" },
+  { start: 1, end: 8, phase: "数据链路跑通", time: "2026.05 - 2026.06", content: "视频采集、RTMPose 提取、置信度异常修正、击球帧检测、骨架序列保存。", output: "train_data.npy、train_label.pkl、关键点可视化、测试样例" },
+  { start: 9, end: 16, phase: "基础模型实验", time: "2026.07 - 2026.08", content: "ST-GCN、ST-GCN++、UniSTFormer baseline 对比，统一数据划分和骨架输入。", output: "基础准确率、参数量、FLOPs、推理速度对比表" },
+  { start: 17, end: 24, phase: "路线 A 轻量增强", time: "2026.09 - 2026.10", content: "UniSTFormer 加入羽毛球专项分区先验和轻量频域运动增强。", output: "移动端主模型候选、ONNX/TFLite 导出尝试" },
+  { start: 25, end: 34, phase: "路线 B 科研增强", time: "2026.11 - 2026.12", content: "ST-GCN++ 逐步融合 MTE、PRN、CSCL，完成消融实验。", output: "论文创新实验表、可解释性图、错误混淆分析" },
+  { start: 35, end: 44, phase: "系统整合与测试", time: "2027.01 - 2027.02", content: "端到端接入 App，完成关键点高亮、语音反馈、训练记录和用户测试。", output: "项目展示系统、答辩演示视频、用户测试报告" },
+  { start: 45, end: 52, phase: "论文撰写与开源", time: "2027.03 - 2027.05", content: "论文投稿、代码开源、软著材料、结题报告整理。", output: "论文初稿、开源仓库、软著与结题报告" },
 ];
 
 const memberAccounts = [
@@ -223,6 +232,7 @@ let analysisTimer = 0;
 
 document.addEventListener("DOMContentLoaded", () => {
   setupHeader();
+  setupPageUtilities();
   setupReveal();
   setupDemo();
   setupProgress();
@@ -260,10 +270,33 @@ function setupHeader() {
   const observer = new IntersectionObserver((entries) => {
     entries.forEach((entry) => {
       if (!entry.isIntersecting) return;
-      navLinks.forEach((link) => link.classList.toggle("active", link.getAttribute("href") === `#${entry.target.id}`));
+      navLinks.forEach((link) => {
+        const active = link.getAttribute("href") === `#${entry.target.id}`;
+        link.classList.toggle("active", active);
+        if (active) {
+          link.setAttribute("aria-current", "page");
+        } else {
+          link.removeAttribute("aria-current");
+        }
+      });
     });
   }, { rootMargin: "-35% 0px -58% 0px", threshold: 0.01 });
   sections.forEach((section) => observer.observe(section));
+}
+
+function setupPageUtilities() {
+  const progress = document.querySelector("#scroll-progress");
+  const toTop = document.querySelector("#to-top");
+  const update = () => {
+    const scrollable = Math.max(1, document.documentElement.scrollHeight - window.innerHeight);
+    const ratio = Math.min(1, Math.max(0, window.scrollY / scrollable));
+    if (progress) progress.style.transform = `scaleX(${ratio})`;
+    toTop?.classList.toggle("visible", window.scrollY > 520);
+  };
+  update();
+  window.addEventListener("scroll", update, { passive: true });
+  window.addEventListener("resize", update);
+  toTop?.addEventListener("click", () => window.scrollTo({ top: 0, behavior: "smooth" }));
 }
 
 function setupReveal() {
@@ -285,7 +318,11 @@ function setupDemo() {
   document.querySelectorAll(".action-list button").forEach((button) => {
     button.addEventListener("click", () => {
       selectedAction = button.dataset.action || "clear";
-      document.querySelectorAll(".action-list button").forEach((item) => item.classList.toggle("active", item === button));
+      document.querySelectorAll(".action-list button").forEach((item) => {
+        const active = item === button;
+        item.classList.toggle("active", active);
+        item.setAttribute("aria-pressed", String(active));
+      });
       resetSteps();
       updateResult();
     });
@@ -300,6 +337,7 @@ function resetSteps() {
     step.classList.toggle("active", index === 0);
     step.classList.remove("done");
   });
+  setDemoProgress(0, "等待开始");
 }
 
 function runAnalysis() {
@@ -313,13 +351,16 @@ function runAnalysis() {
     step.classList.toggle("active", stepIndex === 0);
     step.classList.remove("done");
   });
+  setDemoProgress(8, "准备分析");
   const next = () => {
     steps[index]?.classList.remove("active");
     steps[index]?.classList.add("done");
     index += 1;
+    setDemoProgress(Math.min(100, Math.round((index / steps.length) * 100)), steps[index]?.textContent || "分析完成");
     if (index >= steps.length) {
       button.disabled = false;
       button.textContent = "重新检测";
+      setDemoProgress(100, "分析完成");
       updateResult(true);
       return;
     }
@@ -329,14 +370,31 @@ function runAnalysis() {
   analysisTimer = window.setTimeout(next, 560);
 }
 
+function setDemoProgress(percent, label) {
+  const bar = document.querySelector("#demo-progress-bar");
+  if (bar) bar.style.width = `${percent}%`;
+  setText("#demo-progress-value", `${percent}%`);
+  setText("#demo-progress-label", label);
+}
+
 function updateResult(flash = false) {
   const data = demoData[selectedAction];
   setText("#demo-action-name", data.name);
   setText("#result-action", data.name);
   setText("#result-main", data.main);
   setText("#result-secondary", data.secondary);
+  setText("#result-focus", data.focusLabel);
+  setText("#result-route", data.route);
   setText("#confidence-value", `${data.confidence}%`);
   setText("#result-advice", data.advice);
+  const evidenceList = document.querySelector("#result-evidence");
+  if (evidenceList) {
+    evidenceList.replaceChildren(...data.evidence.map((item) => {
+      const chip = document.createElement("span");
+      chip.textContent = item;
+      return chip;
+    }));
+  }
   const bar = document.querySelector("#confidence-bar");
   if (bar) bar.style.width = `${data.confidence}%`;
   if (flash) document.querySelector(".result-panel")?.animate([{ transform: "translateY(0)" }, { transform: "translateY(-4px)" }, { transform: "translateY(0)" }], { duration: 380 });
@@ -436,7 +494,9 @@ function highlightPhaseByWeek(week) {
   document.querySelectorAll(".phase-card").forEach((card) => {
     const start = Number(card.dataset.phaseStart);
     const end = Number(card.dataset.phaseEnd);
-    card.classList.toggle("selected", week >= start && week <= end);
+    const selected = week >= start && week <= end;
+    card.classList.toggle("selected", selected);
+    card.setAttribute("aria-pressed", String(selected));
   });
 }
 
@@ -457,7 +517,7 @@ function setupTeam() {
 function renderTeam(filter) {
   const grid = document.querySelector("#team-grid");
   if (!grid) return;
-  const visible = filterMembers(filter);
+  const visible = filterMembers(filter, { includeMentor: false });
   grid.replaceChildren(...visible.map((member) => {
     const card = document.createElement("article");
     card.className = "member-card reveal visible";
@@ -482,10 +542,12 @@ function setupAuth() {
   const loginForm = document.querySelector("#login-form");
   const passwordForm = document.querySelector("#password-form");
   const noteForm = document.querySelector("#note-form");
+  updatePasswordStatus();
   document.querySelector("#password-toggle")?.addEventListener("click", () => {
     const form = document.querySelector("#password-form");
     if (form) form.hidden = !form.hidden;
     setText("#password-message", "");
+    updatePasswordStatus();
   });
   document.querySelector("#logout-button")?.addEventListener("click", () => {
     sessionStorage.removeItem(authSessionKey);
@@ -497,7 +559,8 @@ function setupAuth() {
     const account = findAccount(String(form.get("username") || ""));
     const password = String(form.get("password") || "");
     if (!account || !(await verifyPassword(account.username, password))) {
-      setText("#auth-message", "账号或密码不正确。");
+      const customHint = account && hasCustomPassword(account.username) ? "检测到此浏览器保存过自定义密码，请使用修改后的密码。" : "请确认账号和当前密码。";
+      setText("#auth-message", `账号或密码不正确。${customHint}`);
       return;
     }
     sessionStorage.setItem(authSessionKey, account.username);
@@ -513,12 +576,18 @@ function setupAuth() {
     const oldPassword = String(form.get("oldPassword") || "");
     const newPassword = String(form.get("newPassword") || "");
     const confirmPassword = String(form.get("confirmPassword") || "");
-    if (!(await verifyPassword(account.username, oldPassword))) return setText("#password-message", "原密码不正确。");
+    if (!(await verifyPassword(account.username, oldPassword))) return setText("#password-message", "当前密码不正确。如果你之前改过密码，这里要填修改后的密码。");
     if (newPassword.length < 6) return setText("#password-message", "新密码至少 6 位。");
     if (newPassword !== confirmPassword) return setText("#password-message", "两次输入的新密码不一致。");
-    await savePassword(account.username, newPassword);
+    try {
+      await savePassword(account.username, newPassword);
+    } catch {
+      setText("#password-message", "浏览器阻止了本地保存，请检查隐私模式或站点数据权限。");
+      return;
+    }
     passwordForm.reset();
-    setText("#password-message", "密码已修改。");
+    updatePasswordStatus(account.username);
+    setText("#password-message", `密码已修改。之后请在${getStorageScopeLabel()}使用新密码登录。`);
   });
   noteForm?.addEventListener("submit", (event) => {
     event.preventDefault();
@@ -540,6 +609,7 @@ function renderAuthState(account) {
   if (!account) {
     document.querySelector("#member-report")?.replaceChildren();
     document.querySelector("#member-progress-tabs")?.replaceChildren();
+    updatePasswordStatus();
     return;
   }
   const member = members.find((item) => item.username === account.username);
@@ -553,6 +623,7 @@ function renderAuthState(account) {
   const notes = readNotes();
   const textarea = document.querySelector("#task-note");
   if (textarea) textarea.value = notes[member.username] || "";
+  updatePasswordStatus(member.username);
   renderMemberTabs(member.name);
 }
 
@@ -636,8 +707,17 @@ function setupOutcomes() {
   if (!grid) return;
   grid.replaceChildren(...outcomes.map(([title, copy, status, owner], index) => {
     const article = document.createElement("article");
+    const statusClass = status === "开发中" ? "is-active" : status === "规划中" ? "is-planned" : "is-pending";
+    const progress = status === "开发中" ? 46 : status === "规划中" ? 18 : 5;
     article.className = "outcome-card reveal visible";
-    article.innerHTML = `<span class="outcome-index">${String(index + 1).padStart(2, "0")}</span><h3>${title}</h3><p>${copy}</p><span class="task-status">${status}</span><small class="owner">负责人：${owner}</small>`;
+    article.innerHTML = `
+      <span class="outcome-index">${String(index + 1).padStart(2, "0")}</span>
+      <h3>${title}</h3>
+      <p>${copy}</p>
+      <span class="task-status ${statusClass}">${status}</span>
+      <span class="outcome-progress" aria-hidden="true"><i style="width: ${progress}%"></i></span>
+      <small class="owner">负责人：${owner}</small>
+    `;
     return article;
   }));
 }
@@ -651,8 +731,12 @@ function setupFilteredButtons(selector, render) {
   });
 }
 
-function filterMembers(filter) {
-  return members.filter((member) => filter === "all" || member.filters.includes(filter));
+function filterMembers(filter, options = {}) {
+  const { includeMentor = true } = options;
+  return members.filter((member) => {
+    if (!includeMentor && member.username === "liyuelong") return false;
+    return filter === "all" || member.filters.includes(filter);
+  });
 }
 
 function findAccount(value) {
@@ -663,6 +747,26 @@ function findAccount(value) {
 function getActiveAccount() {
   const username = sessionStorage.getItem(authSessionKey);
   return memberAccounts.find((account) => account.username === username) || null;
+}
+
+function updatePasswordStatus(username = getActiveAccount()?.username) {
+  setText("#auth-storage-hint", `提示：密码修改只保存在当前浏览器的${getStorageScopeLabel()}，本机预览和 GitHub Pages 线上页面不会互相同步。`);
+  if (!username) {
+    setText("#password-local-status", "登录后可查看当前账号在此浏览器中的密码状态。");
+    return;
+  }
+  const status = hasCustomPassword(username)
+    ? "当前账号在此浏览器已使用自定义密码。"
+    : "当前账号在此浏览器仍使用初始密码。";
+  setText("#password-local-status", `${status} 该设置只对${getStorageScopeLabel()}生效。`);
+}
+
+function getStorageScopeLabel() {
+  return location.hostname.includes("github.io") ? " GitHub Pages 线上页面" : "本机预览页面";
+}
+
+function hasCustomPassword(username) {
+  return Boolean(readPasswordHashes()[username]);
 }
 
 async function verifyPassword(username, password) {
@@ -718,19 +822,18 @@ function drawSkeleton(canvas, time, focusIndexes, variant) {
   const ctx = canvas.getContext("2d");
   const swing = Math.sin(time * 2.2);
   const pulse = Math.max(0, Math.sin(time * 2.2 - 0.5));
-  const sway = Math.sin(time * 1.2) * 5;
-  const coco = [
-    [184 + sway * 0.2, 76], [176 + sway * 0.2, 70], [192 + sway * 0.2, 70], [168 + sway * 0.2, 80], [200 + sway * 0.2, 80],
-    [132 + sway, 136], [218 + sway * 0.35, 132], [104 + sway * 1.2, 198], [252 + swing * 18, 178 - pulse * 32],
-    [96 + Math.sin(time * 2) * 9, 268], [294 + swing * 24, 118 - pulse * 40], [154 + sway * 0.4, 246], [212 + sway * 0.2, 246],
-    [132 + sway * 0.3, 322], [232 + sway * 0.2, 320], [118, 386], [252, 386],
+  const sway = Math.sin(time * 1.2) * 4;
+  const lift = pulse * 18;
+  const coco = getCoco17Pose(variant, swing, lift, sway);
+  const links = [
+    [0, 1], [0, 2], [1, 3], [2, 4],
+    [5, 6], [5, 7], [7, 9], [6, 8], [8, 10],
+    [5, 11], [6, 12], [11, 12],
+    [11, 13], [13, 15], [12, 14], [14, 16],
   ];
-  if (variant === "forehand") { coco[10][1] += 18; coco[8][0] -= 18; }
-  if (variant === "backhand") { coco[10][0] -= 56; coco[10][1] += 20; coco[8][0] -= 24; }
-  const links = [[0,1],[0,2],[1,3],[2,4],[5,6],[5,7],[7,9],[6,8],[8,10],[5,11],[6,12],[11,12],[11,13],[13,15],[12,14],[14,16]];
   const focus = new Set(focusIndexes);
   const wrist = coco[10];
-  const racketEnd = [wrist[0] + 30, wrist[1] - 52];
+  const racketEnd = [wrist[0] + 36, wrist[1] - 58 - lift * 0.4];
   const shuttle = [292 - ((time * 76) % 180), 96 + Math.sin(time * 2.4) * 28];
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   drawGrid(ctx, canvas.width, canvas.height);
@@ -748,6 +851,41 @@ function drawSkeleton(canvas, time, focusIndexes, variant) {
     ctx.fillStyle = active ? "#D9FF77" : "#FFFFFF"; ctx.fill();
     if (active) { ctx.beginPath(); ctx.arc(x, y, 13 + pulse * 5, 0, Math.PI * 2); ctx.strokeStyle = "rgba(217,255,119,0.36)"; ctx.lineWidth = 2; ctx.stroke(); }
   });
+}
+
+function getCoco17Pose(variant, swing, lift, sway) {
+  // COCO-17 order: nose, eyes, ears, shoulders, elbows, wrists, hips, knees, ankles.
+  // This keeps the website skeleton aligned with the RTMPose COCO keypoint format used by the project.
+  const pose = [
+    [184 + sway * 0.2, 76],
+    [176 + sway * 0.2, 70],
+    [192 + sway * 0.2, 70],
+    [168 + sway * 0.2, 82],
+    [200 + sway * 0.2, 82],
+    [136 + sway, 138],
+    [218 + sway * 0.35, 134],
+    [114 + sway * 0.7, 196],
+    [246 + swing * 10, 174 - lift],
+    [108 + Math.sin(swing) * 4, 260],
+    [292 + swing * 18, 122 - lift * 1.7],
+    [156 + sway * 0.3, 248],
+    [210 + sway * 0.2, 248],
+    [138 + sway * 0.2, 320],
+    [226 + sway * 0.2, 318],
+    [122, 382],
+    [244, 382],
+  ];
+  if (variant === "forehand") {
+    pose[8] = [238 + swing * 9, 196 - lift * 0.5];
+    pose[10] = [278 + swing * 14, 150 - lift];
+    pose[9] = [100, 252];
+  }
+  if (variant === "backhand") {
+    pose[7] = [126, 196];
+    pose[8] = [206 + swing * 8, 190 - lift * 0.4];
+    pose[10] = [180 + swing * 10, 158 - lift * 0.7];
+  }
+  return pose;
 }
 
 function drawGrid(ctx, width, height) {

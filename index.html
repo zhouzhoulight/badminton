@@ -3,13 +3,15 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="一拍即慧：基于 RTMPose 与 ST-GCN 的 AI 羽毛球动作纠错系统，同时用于大创项目过程记录与团队协作展示。" />
+    <meta name="description" content="一拍即慧：基于 RTMPose、BMP 启发的关键点修正与双路线骨架动作识别的 AI 羽毛球动作纠错系统，同时用于大创项目过程记录与团队协作展示。" />
+    <meta name="theme-color" content="#F8FBF8" />
     <title>一拍即慧｜AI 羽毛球动作纠错与团队协作平台</title>
     <link rel="icon" href="./assets/icons/logo-shuttle.png?v=20260527" type="image/png" />
-    <link rel="stylesheet" href="./styles.css?v=20260528-soft-green-2" />
+    <link rel="stylesheet" href="./styles.css?v=20260530-route-1" />
   </head>
   <body>
     <header class="site-header" data-elevated="false">
+      <span class="scroll-progress" id="scroll-progress" aria-hidden="true"></span>
       <nav class="nav-shell" aria-label="主导航">
         <a class="brand" href="#home" aria-label="回到首页">
           <img src="./assets/icons/logo-shuttle.png?v=20260527" alt="" />
@@ -38,7 +40,7 @@
           <div class="hero-copy reveal">
             <p class="eyebrow">AI Badminton Coach</p>
             <h1 id="hero-title">一拍即慧<span>AI 羽毛球动作纠错系统</span></h1>
-            <p class="hero-subtitle">基于 RTMPose 姿态估计与 ST-GCN 时空图卷积，自动识别羽毛球动作、检测细粒度错误，并生成个性化训练反馈。</p>
+            <p class="hero-subtitle">基于 RTMPose 姿态估计、BMP 启发的关键点置信度修正，以及 UniSTFormer / ST-GCN++ 双路线骨架识别，自动检测羽毛球动作错误并生成训练反馈。</p>
             <div class="hero-actions">
               <a class="button primary" href="#technology">查看技术方案</a>
               <a class="button secondary" href="#demo">体验系统演示</a>
@@ -98,25 +100,70 @@
         </div>
       </section>
 
+      <section class="section pain" id="pain" aria-labelledby="pain-title">
+        <div class="container split-heading reveal">
+          <div>
+            <p class="eyebrow">Why It Matters</p>
+            <h2 id="pain-title">为什么需要一拍即慧？</h2>
+          </div>
+          <p>初学者最缺的不是训练热情，而是及时、准确、可持续的动作反馈。系统要做的不是记录一次挥拍，而是帮用户知道下一次该怎么改。</p>
+        </div>
+        <div class="container pain-grid">
+          <article class="pain-card reveal">
+            <span>01</span>
+            <h3>教练成本高</h3>
+            <p>专业指导难以长期获得，普通学生和业余爱好者训练成本较高。</p>
+          </article>
+          <article class="pain-card reveal">
+            <span>02</span>
+            <h3>错误难定位</h3>
+            <p>击球点、转体、手腕发力等细节问题，仅靠回放很难准确判断。</p>
+          </article>
+          <article class="pain-card reveal">
+            <span>03</span>
+            <h3>反馈不连续</h3>
+            <p>传统训练缺少历史记录和持续跟踪，难以形成个性化改进计划。</p>
+          </article>
+        </div>
+      </section>
+
       <section class="section technology" id="technology" aria-labelledby="technology-title">
         <div class="container section-heading reveal">
           <p class="eyebrow">Technical Route</p>
           <h2 id="technology-title">核心技术链路</h2>
-          <p>系统把人体关节看作一张随时间变化的图，学习击球动作中的关键差异，而不是只做普通运动记录。</p>
+          <p>新版路线在 RTMPose 后加入关键点异常修正，再用移动端路线与科研路线并行识别，让系统既能落地，也能支撑细粒度实验。</p>
         </div>
         <div class="container flow-map" aria-label="核心技术流程">
-          <article class="flow-node reveal"><span>01</span><h3>视频输入</h3><p>用户通过手机录制动作。</p></article>
-          <article class="flow-node reveal"><span>02</span><h3>RTMPose</h3><p>提取 17 个 COCO 人体关键点。</p></article>
-          <article class="flow-node reveal"><span>03</span><h3>击球帧检测</h3><p>使用腕部速度、肘部角速度、抛球轨迹定位关键帧。</p></article>
-          <article class="flow-node reveal"><span>04</span><h3>ST-GCN</h3><p>对骨架序列进行时空图卷积建模。</p></article>
-          <article class="flow-node reveal"><span>05</span><h3>层次分类器</h3><p>先动作识别，后错误检测。</p></article>
-          <article class="flow-node reveal"><span>06</span><h3>训练建议</h3><p>结合用户档案生成长期训练反馈。</p></article>
+          <article class="flow-node reveal"><span>01</span><h3>视频输入</h3><p>手机录制或导入训练视频，支持三类核心动作。</p></article>
+          <article class="flow-node reveal"><span>02</span><h3>RTMPose 姿态估计</h3><p>输出 COCO-17 关键点坐标与置信度。</p></article>
+          <article class="flow-node reveal"><span>03</span><h3>置信度异常修正</h3><p>受 BMP 启发，触发低置信度、突变和左右点交换修正。</p></article>
+          <article class="flow-node reveal"><span>04</span><h3>击球帧检测</h3><p>用腕部速度、肘部角速度和抛球轨迹定位关键帧。</p></article>
+          <article class="flow-node reveal"><span>05</span><h3>骨架序列构建</h3><p>截取击球帧前后窗口，整理为 N×C×T×V×M。</p></article>
+          <article class="flow-node reveal"><span>06</span><h3>双路线识别</h3><p>UniSTFormer 端侧路线与 ST-GCN++ 科研路线并行。</p></article>
+          <article class="flow-node reveal"><span>07</span><h3>层次化错误检测</h3><p>先判断动作大类，再进入对应错误检测头。</p></article>
+          <article class="flow-node reveal"><span>08</span><h3>个性化反馈</h3><p>结合历史错误频率生成建议、语音和训练计划。</p></article>
         </div>
         <div class="container tech-grid">
-          <article class="tech-card reveal"><p class="eyebrow">Pose</p><h3>RTMPose 关键点提取</h3><p>从移动端视频中实时提取 COCO-17 关键点，并保留坐标与置信度。</p><div class="tag-row"><span>COCO-17</span><span>Mobile</span><span>Keypoints</span></div></article>
-          <article class="tech-card reveal"><p class="eyebrow">Temporal</p><h3>动作自适应击球帧定位</h3><p>高远球关注腕部峰值，发球动作结合抛球轨迹与肘部角速度。</p><div class="tag-row"><span>Hit Frame</span><span>Motion Peak</span></div></article>
-          <article class="tech-card dark reveal"><p class="eyebrow">Graph</p><h3>ST-GCN 骨架时空特征学习</h3><p>在空间维度学习关节协同关系，在时间维度学习动作动态差异。</p><div class="tag-row"><span>ST-GCN</span><span>Skeleton Graph</span></div></article>
-          <article class="tech-card reveal"><p class="eyebrow">Classifier</p><h3>层次化动作-错误分类</h3><p>先识别高远球、正手发球、反手发球，再进入对应错误分支。</p><div class="tag-row"><span>Fine-grained</span><span>Error Detection</span></div></article>
+          <article class="tech-card reveal"><p class="eyebrow">Pose</p><h3>RTMPose 姿态估计</h3><p>从移动端视频中提取 COCO-17 关键点，保留 x、y、score 作为后续模型输入。</p><div class="tag-row"><span>COCO-17</span><span>RTMPose</span><span>TFLite</span></div></article>
+          <article class="tech-card reveal"><p class="eyebrow">BMP Inspired</p><h3>置信度异常回归修正</h3><p>借鉴 BMP 的置信度驱动触发思想，不引入分割闭环，而是在 RTMPose 后修正低置信度、突变和结构异常点。</p><div class="tag-row"><span>Confidence</span><span>Regression</span><span>Anomaly Mask</span></div></article>
+          <article class="tech-card reveal"><p class="eyebrow">Temporal</p><h3>动作自适应击球帧定位</h3><p>高远球关注肩肘腕链条和速度峰值，发球动作额外结合抛球轨迹与准备姿态。</p><div class="tag-row"><span>Hit Frame</span><span>Motion Peak</span><span>Window</span></div></article>
+          <article class="tech-card reveal"><p class="eyebrow">Route A</p><h3>UniSTFormer 轻量路线</h3><p>作为移动端落地主模型，吸收 SkateFormer 分区注意力和 FreqMixFormer 频域增强思想。</p><div class="tag-row"><span>Mobile</span><span>Partition</span><span>Frequency</span></div></article>
+          <article class="tech-card dark reveal"><p class="eyebrow">Route B</p><h3>ST-GCN++ / ProtoGCN 科研路线</h3><p>以 ST-GCN++ 为强基线，逐步融合 MTE、PRN、CSCL，用于细粒度错误区分和消融实验。</p><div class="tag-row"><span>ST-GCN++</span><span>MTE</span><span>PRN</span><span>CSCL</span></div></article>
+          <article class="tech-card reveal"><p class="eyebrow">Classifier</p><h3>层次化动作-错误分类</h3><p>先识别高远球、正手发球、反手发球，再进入对应错误分支，降低标签混淆。</p><div class="tag-row"><span>Fine-grained</span><span>Error Detection</span></div></article>
+        </div>
+        <div class="container route-compare reveal" aria-label="双路线动作识别对比">
+          <article class="route-track">
+            <span class="route-badge">路线 A · 移动端</span>
+            <h3>UniSTFormer + 专项分区 + 频域增强</h3>
+            <p>面向 App 实时识别，优先控制参数量、FLOPs 和端侧推理延迟。</p>
+            <ul><li>肩-肘-腕局部链与髋-肩-腕动力链分区</li><li>DCT/FFT 或高低频能量统计增强细微错误</li><li>优先导出 ONNX / TFLite</li></ul>
+          </article>
+          <article class="route-track featured">
+            <span class="route-badge">路线 B · 科研实验</span>
+            <h3>ST-GCN++ + ProtoGCN 思想增强</h3>
+            <p>面向论文创新和对比实验，突出拓扑、原型和对比学习的可解释性。</p>
+            <ul><li>ST-GCN++ 强基线验证骨架输入</li><li>MTE 增强运动拓扑关系</li><li>PRN / CSCL 用于相似错误类别区分</li></ul>
+          </article>
         </div>
       </section>
 
@@ -124,17 +171,21 @@
         <div class="container section-heading reveal">
           <p class="eyebrow">Live Demo</p>
           <h2 id="demo-title">系统演示</h2>
-          <p>前端模拟一次 AI 动作分析：选择动作、启动检测、查看错误与训练建议，不请求后端接口。</p>
+          <p>前端模拟新版 AI 动作分析：从 COCO-17 关键点提取、异常修正、击球帧定位到双路线识别与训练建议。</p>
         </div>
         <div class="container demo-grid">
           <aside class="demo-controls reveal">
             <span class="panel-label">动作类型</span>
             <div class="action-list" role="group" aria-label="选择动作">
-              <button class="active" type="button" data-action="clear"><strong>高远球</strong><span>击球点与转体发力</span></button>
-              <button type="button" data-action="forehand"><strong>正手发球</strong><span>手腕内旋与抛球稳定</span></button>
-              <button type="button" data-action="backhand"><strong>反手发球</strong><span>拍面角度与击球点控制</span></button>
+              <button class="active" type="button" data-action="clear" aria-pressed="true"><strong>高远球</strong><span>击球点与转体发力</span></button>
+              <button type="button" data-action="forehand" aria-pressed="false"><strong>正手发球</strong><span>手腕内旋与抛球稳定</span></button>
+              <button type="button" data-action="backhand" aria-pressed="false"><strong>反手发球</strong><span>拍面角度与击球点控制</span></button>
             </div>
             <button class="button primary full" id="run-analysis" type="button">开始检测</button>
+            <div class="demo-progress" aria-label="检测进度">
+              <div><span id="demo-progress-label">等待开始</span><strong id="demo-progress-value">0%</strong></div>
+              <i id="demo-progress-bar"></i>
+            </div>
           </aside>
           <div class="demo-phone-wrap reveal">
             <div class="phone-mockup demo-phone">
@@ -145,9 +196,11 @@
                 <span class="coco-badge">Hit Frame</span>
               </div>
               <ol class="analysis-steps" id="analysis-steps" aria-label="分析步骤">
-                <li class="active">正在提取关键点</li>
+                <li class="active">正在提取 COCO-17 关键点</li>
+                <li>正在检测低置信度与异常跳变</li>
+                <li>正在回归修正关键点轨迹</li>
                 <li>正在定位击球帧</li>
-                <li>正在进行 ST-GCN 推理</li>
+                <li>正在进行双路线动作识别</li>
                 <li>正在生成训练建议</li>
               </ol>
             </div>
@@ -157,9 +210,15 @@
             <h3 id="result-action">高远球</h3>
             <div class="result-row"><span>主要错误</span><strong id="result-main">击球点过低</strong></div>
             <div class="result-row"><span>次要问题</span><strong id="result-secondary">转体不足</strong></div>
+            <div class="result-row"><span>重点关节</span><strong id="result-focus">右肩 / 右肘 / 右腕</strong></div>
+            <div class="result-row"><span>识别路线</span><strong id="result-route">路线 A 端侧识别</strong></div>
             <div class="confidence">
               <div><span>置信度</span><strong id="confidence-value">92%</strong></div>
               <div class="confidence-track"><i id="confidence-bar"></i></div>
+            </div>
+            <div class="evidence-box">
+              <span>模型依据</span>
+              <div class="evidence-list" id="result-evidence"></div>
             </div>
             <div class="advice-box"><span>个性化建议</span><p id="result-advice">提高击球点，提前完成侧身引拍，强化蹬转发力。</p></div>
           </aside>
@@ -230,6 +289,7 @@
               <p class="eyebrow">Member Login</p>
               <h3>成员登录入口</h3>
               <p>静态 GitHub Pages 环境下使用前端模拟登录，用于项目展示和组内协作演示。</p>
+              <p class="auth-storage-hint" id="auth-storage-hint">密码修改只保存在当前浏览器和当前网址。</p>
             </div>
             <form class="auth-form" id="login-form">
               <label for="login-username">账号</label>
@@ -256,7 +316,8 @@
             </div>
             <form class="password-form" id="password-form" hidden>
               <input id="password-username" class="visually-hidden" name="username" autocomplete="username" readonly tabindex="-1" aria-hidden="true" />
-              <div><label for="old-password">原密码</label><input id="old-password" name="oldPassword" type="password" autocomplete="current-password" required /></div>
+              <p class="password-local-status" id="password-local-status">当前账号密码状态读取中。</p>
+              <div><label for="old-password">当前密码</label><input id="old-password" name="oldPassword" type="password" autocomplete="current-password" required /></div>
               <div><label for="new-password">新密码</label><input id="new-password" name="newPassword" type="password" autocomplete="new-password" minlength="6" required /></div>
               <div><label for="confirm-password">确认新密码</label><input id="confirm-password" name="confirmPassword" type="password" autocomplete="new-password" minlength="6" required /></div>
               <button class="button secondary" type="submit">保存新密码</button>
@@ -323,10 +384,11 @@
           <p>项目周期：2026.05 - 2027.05</p>
         </div>
         <a class="footer-link" href="#workspace">团队协作入口</a>
-        <small>Copyright © 2026 一拍即慧 Project Team</small>
+        <small><span id="last-updated">最后更新：2026.05.28</span><br />Copyright © 2026 一拍即慧 Project Team</small>
       </div>
     </footer>
+    <button class="to-top" id="to-top" type="button" aria-label="返回顶部">↑</button>
 
-    <script src="./script.js?v=20260528-phase-2"></script>
+    <script src="./script.js?v=20260530-route-1"></script>
   </body>
 </html>
