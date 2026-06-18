@@ -9,8 +9,8 @@ const demoData = {
     advice: "提高击球点，提前完成侧身引拍，强化蹬转发力。",
     focus: [6, 8, 10],
     focusLabel: "右肩 / 右肘 / 右腕",
-    route: "路线 A 端侧识别 + 路线 B 科研复核",
-    evidence: ["右腕低置信度帧已触发回归修正", "腕部速度峰值出现在较低位置", "击球帧前肩肘打开不足"],
+    route: "前端模拟，AI 模块待接入",
+    evidence: ["模拟：右腕轨迹低于参考区间", "模拟：腕部速度峰值出现在较低位置", "模拟：击球帧前肩肘打开不足"],
   },
   forehand: {
     name: "正手发球",
@@ -20,8 +20,8 @@ const demoData = {
     advice: "保持抛球高度稳定，击球瞬间增加手腕内旋。",
     focus: [6, 8, 10],
     focusLabel: "右肩 / 右肘 / 右腕",
-    route: "路线 A 端侧识别",
-    evidence: ["抛球轨迹波动触发稳定性检查", "击球瞬间腕部内旋幅度偏小", "拍面角度变化不稳定"],
+    route: "前端模拟，AI 模块待接入",
+    evidence: ["模拟：抛球轨迹波动较大", "模拟：击球瞬间腕部内旋幅度偏小", "模拟：拍面角度变化不稳定"],
   },
   backhand: {
     name: "反手发球",
@@ -31,28 +31,41 @@ const demoData = {
     advice: "控制拍面角度，保持击球点靠近身体前方。",
     focus: [6, 8, 10],
     focusLabel: "右肩 / 右肘 / 右腕",
-    route: "路线 A 端侧识别",
-    evidence: ["右腕局部轨迹经置信度加权平滑", "击球点相对身体中线偏离", "腕部外翻角度偏大"],
+    route: "前端模拟，AI 模块待接入",
+    evidence: ["模拟：右腕局部轨迹偏离参考范围", "模拟：击球点相对身体中线偏离", "模拟：腕部外翻角度偏大"],
   },
 };
 
+const technicalNodes = [
+  ["01", "视频输入", "相机录像 / 本地视频导入", "当前 APP 已有录像功能，并加入不同分辨率选项。"],
+  ["02", "姿态估计", "提取 COCO17 人体关键点", "目标链路明确，后续继续验证 RTMPose / TFLite 稳定性。"],
+  ["03", "COCO17 关键点", "x、y、score 三通道", "已围绕 17 个关键点设计骨架输入与可视化。"],
+  ["04", "击球帧检测", "规则法约 50% 正确率", "手腕速度、手肘角度、手臂方向、羽毛球检测和连续峰值仍误检较多。"],
+  ["05", "骨架序列构建", "N×C×T×V×M", "下一步需要把真实标注数据稳定接入训练格式。"],
+  ["06", "动作识别模型", "UniSTFormer 重点候选", "ST-GCN / ST-GCN++ / ProtoGCN 用于科研对比，FreqMixFormer 作为高精度候选。"],
+  ["07", "错误类型检测", "先动作，再错误", "围绕高远球、正手发球、反手发球进入对应错误分支。"],
+  ["08", "规则引擎建议", "Python 原型已完成", "可按训练次数、近 5 次错误率和错误频次生成分层建议。"],
+  ["09", "APP 展示", "录像、历史、开关原型", "已完成分辨率、语音播报、自动 AI 分析开关等界面流程。"],
+  ["10", "历史记录保存", "SQLite 五张表", "真实 AI 结果尚未接入，当前分析内容仍为模拟占位。"],
+];
+
 const phasePlan = [
-  { start: 1, end: 8, phase: "数据链路跑通", time: "2026.05 - 2026.06", content: "视频采集、RTMPose 提取、置信度异常修正、击球帧检测、骨架序列保存。", output: "train_data.npy、train_label.pkl、关键点可视化、测试样例" },
-  { start: 9, end: 16, phase: "基础模型实验", time: "2026.07 - 2026.08", content: "ST-GCN、ST-GCN++、UniSTFormer baseline 对比，统一数据划分和骨架输入。", output: "基础准确率、参数量、FLOPs、推理速度对比表" },
-  { start: 17, end: 24, phase: "路线 A 轻量增强", time: "2026.09 - 2026.10", content: "UniSTFormer 加入羽毛球专项分区先验和轻量频域运动增强。", output: "移动端主模型候选、ONNX/TFLite 导出尝试" },
-  { start: 25, end: 34, phase: "路线 B 科研增强", time: "2026.11 - 2026.12", content: "ST-GCN++ 逐步融合 MTE、PRN、CSCL，完成消融实验。", output: "论文创新实验表、可解释性图、错误混淆分析" },
-  { start: 35, end: 44, phase: "系统整合与测试", time: "2027.01 - 2027.02", content: "端到端接入 App，完成关键点高亮、语音反馈、训练记录和用户测试。", output: "项目展示系统、答辩演示视频、用户测试报告" },
-  { start: 45, end: 52, phase: "论文撰写与开源", time: "2027.03 - 2027.05", content: "论文投稿、代码开源、软著材料、结题报告整理。", output: "论文初稿、开源仓库、软著与结题报告" },
+  { start: 1, end: 8, phase: "数据链路跑通", time: "2026.05 - 2026.06", content: "视频采集、RTMPose 提取、COCO17 骨架保存、规则法击球帧检测、规则引擎原型。", output: "真实视频样本、CSV 标注、骨架可视化、规则引擎模拟报告" },
+  { start: 9, end: 16, phase: "基础模型实验", time: "2026.07 - 2026.08", content: "打通真实数据到模型训练闭环，对比 ST-GCN、ST-GCN++、UniSTFormer baseline。", output: "基础准确率、参数量、FLOPs、推理速度对比表" },
+  { start: 17, end: 24, phase: "UniSTFormer 移动端路线", time: "2026.09 - 2026.10", content: "验证 UniSTFormer 对 COCO17 骨架输入、动作分类和错误检测的适配性。", output: "移动端主模型候选、ONNX/TFLite 导出尝试" },
+  { start: 25, end: 34, phase: "科研对比路线", time: "2026.11 - 2026.12", content: "以 ST-GCN++ / ProtoGCN / FreqMixFormer 做对比，验证细粒度错误识别能力。", output: "论文实验表、混淆矩阵、可解释性分析" },
+  { start: 35, end: 44, phase: "系统整合与用户测试", time: "2027.01 - 2027.02", content: "接入 APP 原型、SQLite 历史记录、规则引擎反馈和真实模型输出。", output: "端到端演示、用户测试报告、Bug 修复记录" },
+  { start: 45, end: 52, phase: "论文撰写与开源", time: "2027.03 - 2027.05", content: "整理软著、论文、开源仓库、项目结题报告和答辩材料。", output: "论文初稿、开源仓库、软著与结题报告" },
 ];
 
 const memberAccounts = [
   { username: "liyuelong", name: "李月龙" },
   { username: "zhouzhou", name: "周洲" },
+  { username: "wangpenghan", name: "王鹏涵" },
+  { username: "zhuyihan", name: "朱奕涵" },
+  { username: "jiangyaqi", name: "姜雅琪" },
   { username: "yangziyu", name: "杨子钰" },
   { username: "caomuning", name: "曹沐宁" },
-  { username: "wangpenghan", name: "王鹏涵" },
-  { username: "jiangyaqi", name: "姜雅琪" },
-  { username: "zhuzihan", name: "朱梓涵" },
 ];
 
 // Static GitHub Pages demo login only. This is not a production authentication system.
@@ -63,7 +76,7 @@ const initialPasswordHashes = {
   caomuning: "8c165e802aaa4ea0fcfee4035bd77c244ae6716eddb431af895c835514d6a138",
   wangpenghan: "792780b5866afc9acd380cf6fc6323772f43aa5ee8d3b18a351724f1032c28ca",
   jiangyaqi: "bcae9121699bb605b381e4d991f4b3f11e5b6d1b40cc0bf9cc0bf0ead3bf7d4e",
-  zhuzihan: "f67ce530da1ecc33c4bb536e1bb7a6fbb84f61db5db8c804f33a31d70eb3091f",
+  zhuyihan: "a532b926a753f0f7c16386e9128f2b3a672dbd2bce8785fb44b08bc2685d7cd8",
 };
 
 const authSessionKey = "yipaijihui-member-session";
@@ -75,155 +88,181 @@ const members = [
     name: "李月龙",
     username: "liyuelong",
     role: "指导教师",
-    direction: "项目指导 / 算法研究",
-    mainWork: "提供 L40 GPU 服务器、每周组会指导、实验设计建议、论文修改与算法研究资源支持。",
-    status: "正常",
-    weekly: "围绕算法路线、实验设计和项目推进节奏进行指导，帮助团队聚焦可落地的研究闭环。",
-    next: "继续指导最小真实闭环、阶段实验设计、论文结构与成果材料整理。",
-    blocker: "需要团队持续同步真实数据、实验结果和阶段风险，便于及时调整技术路线。",
-    route: "项目总体指导与科研支持",
-    done: "确定项目研究方向，提供算力与组会指导，支持实验设计和论文修改。",
-    todo: "跟进真实数据闭环、模型实验结果、软著论文与结题材料。",
+    direction: "项目指导 / 算法研究建议 / 实验设计",
+    mainWork: "负责项目指导、算法研究建议、实验设计、组会推进、论文和成果材料指导。",
+    status: "指导中",
+    weekly: "指导项目技术路线、实验设计和阶段成果整理，帮助团队把工程原型与科研实验边界说清楚。",
+    weeklyItems: ["指导项目整体路线与实验设计", "推进组会同步与阶段风险梳理", "对论文和成果材料提供修改建议"],
+    issues: ["需要团队持续提交真实数据、实验结果和待解决问题"],
+    nextItems: ["继续指导真实数据闭环、模型对比实验和结题材料准备"],
+    route: "指导教师：项目指导与科研支持",
+    done: "提供组会指导、算力和实验设计建议。",
+    todo: "继续跟进算法实验、论文结构和成果材料。",
     filters: ["algorithm", "docs", "testing"],
-    tags: ["指导教师", "算法研究", "项目管理"],
-    reports: [
-      { label: "最近一周", title: "项目路线与阶段推进指导", items: ["指导团队围绕姿态估计、击球帧检测、ST-GCN 与层次分类形成清晰技术链路。", "根据组会进展帮助团队识别数据、算法、移动端集成中的关键风险。", "为算法实验和论文材料提供方向性建议。"] },
-      { label: "持续支持", title: "算力、组会与科研资源支持", items: ["提供 L40 GPU 服务器与算法研究资源支持。", "组织每周组会，推动成员同步进展和问题。", "对实验设计、论文结构和项目成果材料进行指导。"] },
-    ],
+    tags: ["指导教师", "实验设计", "论文指导"],
+    reports: [{ label: "本周", title: "项目指导", items: ["指导技术路线表达和阶段计划。", "推动算法、数据、App、规则引擎之间对齐。"] }],
   },
   {
     name: "周洲",
     username: "zhouzhou",
-    role: "项目负责人 / 算法负责人",
-    direction: "算法",
-    mainWork: "姿态估计、ST-GCN 训练、层次分类器、整体技术路线。",
+    role: "项目负责人 / 算法负责人 / 网站负责人",
+    direction: "算法 / 网站 / 技术路线",
+    mainWork: "统筹技术路线，推进姿态估计、动作识别、错误检测、网站展示和模型对比实验。",
     status: "进行中",
-    weekly: "阅读 ProtoGCN，跑通真实高远球视频流程，验证 COCO17 到 ST-GCN 的基础数据链路。",
-    next: "跑一个最小真实闭环：真实视频、RTMPose 关键点、击球帧和 ST-GCN 格式转换。",
-    blocker: "击球帧还需要更准确的自动定位，真实标注样本仍需补充。",
-    route: "路线一：算法主线与系统集成",
-    done: "ProtoGCN/MTE 调研、NTU60 复现实验、COCO17 graph.py 改造、build_dataset_from_keypoints.py。",
-    todo: "接入 1-3 条标注真实视频并完成最小训练闭环。",
-    filters: ["algorithm"],
-    tags: ["算法", "ST-GCN", "COCO17"],
-    reports: [
-      { label: "最近一周", title: "ProtoGCN 调研与真实视频流程验证", items: ["理解 ProtoGCN 数据流动，优先考虑迁移 MTE 模块增强动作拓扑关系。", "将 3 个羽毛球高远球视频平均抽取 64 帧跑通流程。", "复现 ST-GCN 原论文实验，熟悉 NTU60 processed skeleton 数据格式和训练流程。"] },
-      { label: "较近一周", title: "路线协调与新技术选型", items: ["协调算法、数据、App 等路线成员进度。", "粗略阅读 ProtoGCN，确定可参考 ProtoGCN / PYSKL 作为新路线。", "学习 Claude Code，并尝试制作项目展示网站。"] },
-      { label: "最远一周", title: "COCO17 到 ST-GCN 链路打通", items: ["修改 graph.py 支持 COCO17。", "用假 COCO17 数据和 yaml 跑通 ST-GCN 训练测试。", "编写关键点格式转换脚本，将 T×17×3 转为 ST-GCN 需要的格式。"] },
-    ],
-  },
-  {
-    name: "杨子钰",
-    username: "yangziyu",
-    role: "数据采集与用户测试",
-    direction: "数据 / 测试 / 文档",
-    mainWork: "PPT 制作、数据采集、用户测试、文档整理。",
-    status: "正常",
-    weekly: "与两位教练沟通动作错误细节，整理标准动作视频，完成裁剪、人脸模糊、标注和 csv 表格。",
-    next: "组织第一批志愿者拍摄，继续完善标准动作与错误动作标注规则。",
-    blocker: "志愿者拍摄排期与多视角数据一致性需要继续协调。",
-    route: "路线三：数据采集与标注",
-    done: "教练资源对接、标准视频整理、动作位置标注、志愿者招募准备。",
-    todo: "开展第一批视频拍摄并沉淀标注规范。",
-    filters: ["data", "testing", "docs"],
-    tags: ["数据", "测试", "文档"],
-    reports: [
-      { label: "最近一周", title: "标准动作视频整理与采集准备", items: ["与两位教练沟通修改动作错误细节。", "拿到标准动作视频作为无错误样本参考。", "完成视频裁剪、人脸模糊、动作位置标注和 csv 表格。"] },
-      { label: "较远一周", title: "教练资源对接与点位标注学习", items: ["联系一级、二级运动员教练确认拍摄流程。", "与羽社主席协商志愿者招募。", "学习 Python rtmlib 标记动作点位。"] },
-    ],
-  },
-  {
-    name: "曹沐宁",
-    username: "caomuning",
-    role: "前端开发 / 算法辅助开发",
-    direction: "前端 / 算法",
-    mainWork: "项目网站、前端页面、卷积实现、模型辅助开发、实验验证。",
-    status: "需协助",
-    weekly: "阅读 BMP 论文，学习卡尔曼滤波；排查移动端 TFLite / SimCC 部署与闪退问题。",
-    next: "继续解决 SimCC 输出解码、维度匹配和 Android TFLite 算子兼容问题。",
-    blocker: "SimCC 输出不是直接坐标，移动端解码复杂；量化模型兼容性较差。",
-    route: "路线二：姿态估计与移动端模型部署",
-    done: "CameraX 问题初步处理、模型 Python 测试、BMP/HiPART 调研。",
-    todo: "完成稳定的移动端关键点提取 Demo。",
-    filters: ["algorithm", "frontend", "mobile"],
-    tags: ["前端", "姿态估计", "TFLite"],
-    reports: [
-      { label: "最近一周", title: "BMP 与卡尔曼滤波", items: ["理解检测、姿态、分割闭环迭代框架。", "认为置信度驱动的条件化触发机制可迁移到关键点稳定性优化。", "学习卡尔曼滤波预测与更新逻辑。"] },
-      { label: "较近一周", title: "HiPART 与移动端部署排查", items: ["阅读遮挡场景 3D 姿态估计论文 HiPART。", "App 可导入视频或拍摄视频提取骨架，但效果仍不稳定。", "定位到 TFLite 转换、SimCC 解码和 Java 冲突问题。"] },
-      { label: "最远一周", title: "Python 模型测试与 CameraX 接入", items: ["Python 测试模型可识别 17 个关键点。", "TFLite 导入 Android Studio，应用可安装。", "CameraX 真机黑屏问题仍需解决。"] },
-    ],
+    weekly: "明确整体技术路线，梳理视频输入到反馈展示的完整流程，调研 UniSTFormer 并优化展示网站。",
+    weeklyItems: ["明确大创项目整体技术路线", "梳理视频输入、姿态估计、关键点提取、动作识别、错误检测到反馈展示的完整流程", "深入阅读 ProtoGCN 代码，理解关键点数据进入模型、backbone 提取特征、head 完成分类的流程", "优化项目展示网站", "调研 UniSTFormer，判断其比 FineParser 更贴近项目任务，比 FreqMixFormer 更适合移动端"],
+    issues: ["真实数据到模型训练的闭环仍需继续打通", "UniSTFormer 与 ST-GCN / FreqMixFormer 等模型还需要正式对比实验"],
+    nextItems: ["更新网站内容", "推进真实数据集与模型训练对接", "设计 UniSTFormer 对比实验"],
+    route: "路线一：算法主线与网站展示",
+    done: "完成技术路线梳理、ProtoGCN 代码阅读、网站结构优化。",
+    todo: "打通真实数据训练闭环并设计 UniSTFormer 对比实验。",
+    filters: ["algorithm", "frontend", "docs"],
+    tags: ["算法", "网站", "UniSTFormer"],
+    reports: [{ label: "本周", title: "技术路线与模型选型", items: ["明确整体路线。", "调研 UniSTFormer。", "优化网站。"] }],
   },
   {
     name: "王鹏涵",
     username: "wangpenghan",
-    role: "移动端开发 / 数据库",
-    direction: "移动端",
-    mainWork: "移动端部署、SQLite、历史记录、摄像头与本地视频流程。",
+    role: "移动端开发 / SQLite 数据库",
+    direction: "Android App / SQLite / 原型流程",
+    mainWork: "负责 App 录像、历史查询、分辨率选项、语音播报、自动分析开关和 SQLite 数据结构。",
     status: "进行中",
-    weekly: "实现历史记录卡片连接视频的复盘入口，完善个人中心框架，并与规则引擎数据库合并方案对齐。",
-    next: "整合 SQLite 数据库代码，连接真实视频路径与后续 AI 分析结果。",
-    blocker: "AI 分析模块尚未接入，视频路径目前仍有假数据占位。",
-    route: "路线五：App 原型与数据存储",
-    done: "SQLite 用户表和训练记录表、RecyclerView 历史记录、Java 版 App 相机录像流程。",
-    todo: "完成历史详情视频复盘与分析结果联动。",
+    weekly: "加入分辨率、语音播报和自动 AI 分析选项，完善录像、历史查询和分析流程，修复清除历史记录闪退 bug。",
+    weeklyItems: ["加入不同检测相机采集分辨率选项", "将分辨率选项连接到第四周录像功能", "加入是否语音播报选项", "加入是否自动进行 AI 分析选项", "完善 APP 录像、历史查询、调用分析流程", "当前 AI 分析模块尚未正式接入，暂时使用模拟代码代替", "优化不同手机版本下的用户功能切换流程", "修复清除历史记录时 APP 闪退的问题，原因是代码引用名称错误", "根据姜雅琪提供的 SQLite 数据库需求，统一数据库结构", "修改第五周 SQLite 数据库，扩展为五张主要数据表", "检查下一阶段开发内容，补充 APP 预留代码"],
+    issues: ["AI 分析模块未接入", "数据库与真实分析结果仍需进一步打通"],
+    nextItems: ["继续完善 APP 录像—历史记录—分析结果—数据库闭环"],
+    route: "路线五：App 原型与 SQLite",
+    done: "完成分辨率、语音播报、自动分析开关、历史记录和五张表扩展。",
+    todo: "继续打通 App、数据库和真实分析结果。",
     filters: ["mobile", "data", "testing"],
-    tags: ["Android", "SQLite", "App"],
-    reports: [
-      { label: "最近一周", title: "历史详情视频复盘与个人中心", items: ["实现历史记录卡片连接对应视频的设计。", "个人中心加入导出训练数据、清空历史记录、累计训练次数、训练等级等模块。", "修复多处 App bug。"] },
-      { label: "较近一周", title: "SQLite 与历史记录列表", items: ["完成用户表和训练记录表。", "搭建 GitHub 仓库并导入数据。", "实现 RecyclerView 训练记录列表。"] },
-      { label: "最远一周", title: "Java 版 App 与相机录像", items: ["重新使用 Java 搭建 App。", "实现相机权限、录像调用和本地保存。", "搭建 Java 版本仓库。"] },
-    ],
+    tags: ["Android", "SQLite", "App 原型"],
+    reports: [{ label: "本周", title: "App 原型与数据库", items: ["完善录像和历史查询。", "修复清除历史记录闪退。", "扩展 SQLite 五张表。"] }],
+  },
+  {
+    name: "朱奕涵",
+    username: "zhuyihan",
+    role: "击球帧检测 / 动作特征实验",
+    direction: "击球帧 / 规则实验 / 连续动作识别",
+    mainWork: "负责击球帧检测、hit / nonhit 数据集、规则法和 LSTM 等连续动作识别实验。",
+    status: "需继续验证",
+    weekly: "测试多种击球帧规则，发现规则法最好约 50% 正确率；建立 hit / nonhit 数据集并尝试 LSTM，但效果暂不理想。",
+    weeklyItems: ["尝试通过增加限定条件提高击球帧检测准确率", "测试手腕速度、手臂伸向、手肘角度、羽毛球检测、连续帧峰值检测等方法", "发现一味增加限定条件会导致检测到的击球帧数量减少，且效果不稳定", "规则法最好情况是能覆盖所有击球帧，但会提取大量错误帧，正确率约 50%", "建立 hit / nonhit 文件夹数据集", "标注约 200 张击球帧用于训练", "由于数据数量太少或数据质量不足，训练效果较差", "尝试 LSTM 连续动作识别，但效果暂不理想"],
+    issues: ["规则法误检多", "数据集规模和质量不足", "LSTM 效果不稳定"],
+    nextItems: ["建立质量更好的击球帧数据集", "继续训练和验证 LSTM 或其他连续动作识别方法"],
+    route: "路线四：击球帧检测与动作特征",
+    done: "完成多规则测试、hit/nonhit 数据集和初步 LSTM 尝试。",
+    todo: "提升数据质量并继续连续动作识别实验。",
+    filters: ["algorithm", "data", "testing"],
+    tags: ["击球帧", "LSTM", "数据集"],
+    reports: [{ label: "本周", title: "击球帧规则与 LSTM 尝试", items: ["规则法约 50% 正确率。", "建立 hit/nonhit 数据集。", "LSTM 效果仍需改进。"] }],
   },
   {
     name: "姜雅琪",
     username: "jiangyaqi",
-    role: "规则引擎与训练反馈",
-    direction: "反馈 / 数据 / 算法",
-    mainWork: "规则引擎、个性化训练建议、错误类型字典、用户测试。",
+    role: "规则引擎 / 个性化反馈",
+    direction: "规则引擎 / SQLite 对接 / 分层建议",
+    mainWork: "负责规则引擎原型、用户等级判定、错误频次分层建议和模拟报告生成。",
     status: "正常",
-    weekly: "完成 SQLite 规则引擎，设计用户表、错误记录表和每周计划表，按近 30 天错误频次生成训练计划。",
-    next: "继续完善错误类型字典与 PRN / CSCL 可解释纠错思路。",
-    blocker: "如何将原型学习模块轻量化并适配移动端还需要实验验证。",
-    route: "路线六：个性化反馈与规则引擎",
-    done: "16 种错误建议字典、每周计划生成、ProtoGCN/BMP 论文调研、xlsx 表格。",
-    todo: "把规则引擎结果与 App 历史记录打通。",
+    weekly: "完善规则引擎原型，统一数据库结构，用 100 条模拟数据验证用户等级、错误统计和个性化建议逻辑。",
+    weeklyItems: ["继续完善规则引擎原型", "统一与路线五冲突的数据库结构", "编写 Python 代码实现用户水平等级判定", "训练次数小于 10 次或近 5 次错误率大于 50% 判定为初学者", "实现按错误频次 1—2 次、3—4 次、5 次及以上返回不同层级建议", "使用 100 条模拟数据测试规则引擎", "生成包含用户等级、错误统计和个性化建议的示例报告", "验证规则逻辑与阈值初步合理"],
+    issues: ["规则引擎仍使用模拟数据", "尚未与 APP 真实历史记录和 AI 分析结果完全打通"],
+    nextItems: ["与王鹏涵的 SQLite 数据库和 APP 历史记录模块继续对接", "准备接入真实分析结果"],
+    route: "路线六：规则引擎与个性化反馈",
+    done: "完成用户等级判定、错误频次分层建议和 100 条模拟数据测试。",
+    todo: "与 App 历史记录和真实分析结果对接。",
     filters: ["algorithm", "data", "testing", "docs"],
-    tags: ["规则引擎", "训练反馈", "ProtoGCN"],
-    reports: [
-      { label: "最近一周", title: "BMP、ProtoGCN 与 SQLite 规则引擎", items: ["判断 BMP 更适合多人遮挡，当前阶段不直接迁移分割模块。", "阅读 ProtoGCN，认为 PRN 可解释性适合错误检测展示。", "完成基于 SQLite 的规则引擎和周计划生成。"] },
-      { label: "较近一周", title: "动作质量评估论文与分层建议", items: ["提炼 TAP 时间动作解析思想。", "提出每类错误可单独训练二分类器。", "重新调整错误类型分层建议。"] },
-      { label: "最远一周", title: "竞品调研与数据库设计", items: ["调研 Apple Pose and Tracking 类应用。", "设计 users、error_records、weekly_plan 表。", "提出追踪具体身体部位的反馈想法。"] },
-    ],
+    tags: ["规则引擎", "SQLite", "模拟数据"],
+    reports: [{ label: "本周", title: "规则引擎模拟验证", items: ["100 条模拟数据测试。", "完成用户等级判定。", "生成示例报告。"] }],
   },
   {
-    name: "朱梓涵",
-    username: "zhuzihan",
-    role: "击球帧检测 / 硬件接口预研",
-    direction: "击球帧 / 硬件",
-    mainWork: "击球帧检测、算法模型设计、硬件接口预研、测试验证。",
-    status: "进行中",
-    weekly: "完成击球帧初步提取路线，加入手肘角度、肩膀旋转和球拍方向后准确度提升。",
-    next: "继续加入球拍与羽毛球距离、手腕角速度等限定条件，提高击球帧定位精度。",
-    blocker: "自动保存每帧数据信息仍不完整，目前部分代码只能保存最后一帧输出。",
-    route: "路线四：击球帧检测与动作特征",
-    done: "MediaPipe 手腕速度峰值、100 个 label 文件、YOLOv8/MediaPipe 环境。",
-    todo: "完善每帧数据保存并整理结构化输出。",
-    filters: ["algorithm", "data", "hardware", "testing"],
-    tags: ["击球帧", "MediaPipe", "硬件预研"],
-    reports: [
-      { label: "最近一周", title: "击球帧初步提取与条件增强", items: ["确定视频、姿态识别、手腕坐标、速度峰值、保存击球帧路线。", "配置 numpy、OpenCV、ultralytics、MediaPipe。", "加入手肘角度、肩膀旋转、球拍方向后准确度提高。"] },
-      { label: "较近一周", title: "标注补充与自动分析代码调研", items: ["重新标注击球帧并生成 100 个 label 文件。", "调研 GitHub 自动标注击球帧和关节角度代码。", "配置 YOLOv8 和 MediaPipe，但每帧数据保存仍需完善。"] },
-    ],
+    name: "杨子钰",
+    username: "yangziyu",
+    role: "数据采集 / 教练标注 / 志愿者组织",
+    direction: "数据采集 / CSV 标注 / 教练沟通",
+    mainWork: "负责视频整理、教练错误标注、CSV 表格、志愿者组织和标注费用协调。",
+    status: "正常",
+    weekly: "整理拍摄视频并交给教练标注，获得 176 条标注结果，计划下周新增 450 条视频。",
+    weeklyItems: ["整理上周四、周六拍摄的视频", "将视频分类后交给教练进行错误标注", "当前获得一个志愿者 176 条视频的标注结果", "数据基本覆盖正手发球、反手发球、高远球及对应错误类型", "将标注结果整理为 CSV 表格并打包交给路线一", "计划下周按教练要求重新组织组员拍摄", "预计下周新增 450 条视频", "加上已用 270 条视频，阶段数据总量预计达到 720 条", "继续招募志愿者", "协商教练标注费用：二级教练 106 条 150 元，一级教练 70 条 110 元", "后续计划更多找一级教练标注，按约 1 元 / 条计费"],
+    issues: ["现有视频规范性仍需提高", "志愿者数量和数据多样性仍需扩充"],
+    nextItems: ["按教练要求重新拍摄", "扩大志愿者数据规模", "继续完善 CSV 标注规范"],
+    route: "路线三：数据采集与标注",
+    done: "完成 176 条教练标注和 CSV 整理。",
+    todo: "组织新增 450 条视频拍摄并扩大志愿者规模。",
+    filters: ["data", "testing", "docs"],
+    tags: ["数据", "CSV", "教练标注"],
+    reports: [{ label: "本周", title: "教练标注与数据扩充", items: ["176 条教练标注。", "270 条已用视频。", "下周预计新增 450 条。"] }],
+  },
+  {
+    name: "曹沐宁",
+    username: "caomuning",
+    role: "前端开发 / 姿态估计与移动端部署协助",
+    direction: "前端 / 姿态估计 / 移动端协助",
+    mainWork: "负责前端开发、姿态估计与移动端部署协助。",
+    status: "待补充",
+    weekly: "本周进展待补充。",
+    weeklyItems: ["本周详细进展待补充"],
+    issues: ["需要补充本周具体工作记录"],
+    nextItems: ["待补充"],
+    route: "路线二：前端与姿态估计部署协助",
+    done: "本周进展待补充。",
+    todo: "待补充。",
+    filters: ["frontend", "algorithm", "mobile"],
+    tags: ["前端", "姿态估计", "待补充"],
+    reports: [{ label: "本周", title: "本周进展待补充", items: ["保留方向：前端开发、姿态估计、移动端部署协助。"] }],
   },
 ];
 
 const outcomes = [
-  ["移动端 App 原型", "实现拍摄、分析、反馈与历史记录查看。", "开发中", "王鹏涵 / 曹沐宁"],
-  ["开源数据集", "整理视频、关键点、动作标签与错误标签。", "规划中", "杨子钰 / 朱梓涵"],
-  ["代码开源仓库", "沉淀训练、推理、转换与演示代码。", "规划中", "周洲 / 曹沐宁"],
-  ["软件著作权", "完成系统 V1.0 软件著作权登记材料。", "待完成", "周洲 / 王鹏涵"],
-  ["研究论文", "总结细粒度羽毛球动作错误检测方法。", "待完成", "周洲 / 姜雅琪"],
-  ["项目结题报告", "形成技术路线、实验结果与应用展示材料。", "待完成", "全体成员"],
+  ["移动端 App 原型", "已完成录像、历史查询、分辨率选项、语音播报和自动分析开关；AI 模块暂未接入。", "开发中", "王鹏涵 / 曹沐宁"],
+  ["可训练数据集", "已整理 270 条可用视频，完成 176 条教练标注，下周预计新增 450 条。", "开发中", "杨子钰 / 朱奕涵"],
+  ["模型实验代码", "UniSTFormer 为移动端重点候选，ST-GCN / ST-GCN++ / ProtoGCN / FreqMixFormer 做对比。", "规划中", "周洲"],
+  ["规则引擎原型", "已使用 100 条模拟数据验证用户等级、错误统计和分层建议。", "开发中", "姜雅琪"],
+  ["软件著作权", "待系统 V1.0 和核心功能链路稳定后整理登记材料。", "待完成", "周洲 / 王鹏涵"],
+  ["研究论文与结题报告", "围绕真实数据、模型对比、击球帧检测和系统原型形成研究材料。", "待完成", "全体成员"],
+];
+
+const datasetStats = [
+  ["176", "已完成教练标注视频", "一个志愿者样本，覆盖三类动作及对应错误类型。", 24],
+  ["270", "已整理可用视频", "当前阶段已用于整理、筛选和交付路线一。", 38],
+  ["450", "下周预计新增视频", "按教练要求重新组织组员拍摄。", 63],
+  ["720", "阶段预计总视频量", "270 条已用 + 450 条预计新增。", 100],
+  ["100", "规则引擎模拟测试数据", "用于验证用户等级、错误统计和分层建议。", 100],
+];
+
+const datasetDetails = [
+  ["标注格式", "CSV", "动作类型 + 错误类型"],
+  ["动作类别", "正手发球 / 反手发球 / 高远球", "覆盖当前三类核心动作"],
+  ["第一次标注费用", "二级教练 106 条 150 元；一级教练 70 条 110 元", "合计 176 条，260 元"],
+  ["后续目标成本", "约 1 元 / 条", "优先更多找一级教练标注"],
+];
+
+const modelReasons = [
+  ["任务更匹配", "UniSTFormer 是骨架动作识别模型，更贴近本项目的动作识别和错误检测任务。"],
+  ["输入更适配", "输入格式适配 COCO 关键点链路，便于与姿态估计模块衔接。"],
+  ["移动端更友好", "计算量低，适合后续 ONNX / TFLite / 移动端部署。"],
+  ["时空关系建模", "能同时理解同一时刻关节之间的空间关系，以及关节随时间变化的时间关系。"],
+  ["细节错误潜力", "对手腕内旋不足、击球点异常、手臂伸展不足、转体不足等瞬时错误更有潜力。"],
+];
+
+const modelComparison = [
+  ["ST-GCN", "基础骨架识别基线", "经典、易复现", "表达能力较旧", "对比基线"],
+  ["ProtoGCN", "科研增强路线", "原型学习、可解释性强", "迁移成本较高", "科研参考"],
+  ["FreqMixFormer", "高精度细粒度候选", "细粒度能力强", "移动端压力较大", "候选对比"],
+  ["FineParser", "动作质量评分参考", "评分任务有参考价值", "与错误分类任务偏离", "不作为主路线"],
+  ["UniSTFormer", "移动端主模型候选", "轻量、COCO 适配、时空建模强", "仍需真实数据验证", "重点候选"],
+];
+
+const prototypeSteps = ["录制或导入视频", "选择采集分辨率", "选择是否语音播报", "选择是否自动 AI 分析", "提取关键点", "定位击球帧", "模拟动作错误检测", "规则引擎生成建议", "保存到历史记录"];
+
+const prototypeFeatures = [
+  ["相机录像功能", "已完成 App 原型录像链路。"],
+  ["分辨率选择", "已加入不同检测相机采集分辨率选项。"],
+  ["语音播报开关", "已加入是否语音播报选项。"],
+  ["自动 AI 分析开关", "已加入是否自动进行 AI 分析选项，真实 AI 尚未接入。"],
+  ["历史记录查询", "已完善历史记录查询与调用分析流程。"],
+  ["SQLite 五张大表", "已按规则引擎需求统一数据库结构。"],
+  ["Bug 修复", "清除历史记录闪退 bug 已修复，原因为代码引用名称错误。"],
+  ["模拟占位", "当前 AI 分析模块仍以模拟代码占位。"],
 ];
 
 let selectedAction = "clear";
@@ -234,6 +273,11 @@ document.addEventListener("DOMContentLoaded", () => {
   setupHeader();
   setupPageUtilities();
   setupReveal();
+  renderTechnicalFlow();
+  renderDatasetStats();
+  renderModelComparison();
+  renderPrototypeSteps();
+  renderWeeklyProgress();
   setupDemo();
   setupProgress();
   setupTeam();
@@ -312,6 +356,94 @@ function setupReveal() {
     el.style.transitionDelay = `${Math.min(index % 5, 4) * 40}ms`;
     observer.observe(el);
   });
+}
+
+function renderTechnicalFlow() {
+  const flow = document.querySelector("#technical-flow");
+  if (!flow) return;
+  flow.replaceChildren(...technicalNodes.map(([index, title, summary, status]) => {
+    const article = document.createElement("article");
+    article.className = "flow-node reveal visible";
+    article.innerHTML = `<span>${index}</span><h3>${title}</h3><p>${summary}</p><small class="node-status">${status}</small>`;
+    return article;
+  }));
+}
+
+function renderDatasetStats() {
+  const grid = document.querySelector("#dataset-grid");
+  if (grid) {
+    grid.replaceChildren(...datasetStats.map(([value, label, copy, progress]) => {
+      const article = document.createElement("article");
+      article.className = "dataset-card reveal visible";
+      article.innerHTML = `<strong>${value}</strong><span>${label}</span><p>${copy}</p><i class="data-bar"><b style="width:${progress}%"></b></i>`;
+      return article;
+    }));
+  }
+  const details = document.querySelector("#dataset-detail-grid");
+  if (details) {
+    details.replaceChildren(...datasetDetails.map(([label, value, copy]) => {
+      const article = document.createElement("article");
+      article.className = "dataset-detail reveal visible";
+      article.innerHTML = `<span>${label}</span><strong>${value}</strong><p>${copy}</p>`;
+      return article;
+    }));
+  }
+}
+
+function renderModelComparison() {
+  const reasons = document.querySelector("#model-reasons");
+  if (reasons) {
+    reasons.replaceChildren(...modelReasons.map(([title, copy], index) => {
+      const article = document.createElement("article");
+      article.className = "reason-card reveal visible";
+      article.innerHTML = `<span>${String(index + 1).padStart(2, "0")}</span><h3>${title}</h3><p>${copy}</p>`;
+      return article;
+    }));
+  }
+  const body = document.querySelector("#model-table-body");
+  if (body) {
+    body.replaceChildren(...modelComparison.map((row) => {
+      const tr = document.createElement("tr");
+      tr.innerHTML = row.map((cell, index) => `<td${index === 0 ? ' data-label="模型"' : ""}>${cell}</td>`).join("");
+      return tr;
+    }));
+  }
+}
+
+function renderPrototypeSteps() {
+  const steps = document.querySelector("#analysis-steps");
+  if (!steps) return;
+  steps.replaceChildren(...prototypeSteps.map((step, index) => {
+    const item = document.createElement("li");
+    item.className = index === 0 ? "active" : "";
+    item.textContent = step;
+    return item;
+  }));
+  const features = document.querySelector("#prototype-feature-grid");
+  if (features) {
+    features.replaceChildren(...prototypeFeatures.map(([title, copy]) => {
+      const article = document.createElement("article");
+      article.className = "prototype-feature reveal visible";
+      article.innerHTML = `<h3>${title}</h3><p>${copy}</p>`;
+      return article;
+    }));
+  }
+}
+
+function renderWeeklyProgress() {
+  const grid = document.querySelector("#weekly-grid");
+  if (!grid) return;
+  grid.replaceChildren(...members.map((member) => {
+    const card = document.createElement("article");
+    card.className = `weekly-card reveal visible ${member.username === "liyuelong" ? "mentor-weekly" : ""}`;
+    card.innerHTML = `
+      <header><span class="avatar">${member.name.slice(0, 1)}</span><div><h3>${member.name}</h3><p>${member.role}</p></div><b>${member.status}</b></header>
+      <div class="weekly-block"><span>本周进展</span><ul>${member.weeklyItems.map((item) => `<li>${item}</li>`).join("")}</ul></div>
+      <div class="weekly-block"><span>当前问题</span><ul>${member.issues.map((item) => `<li>${item}</li>`).join("")}</ul></div>
+      <div class="weekly-block"><span>下周计划</span><ul>${member.nextItems.map((item) => `<li>${item}</li>`).join("")}</ul></div>
+    `;
+    return card;
+  }));
 }
 
 function setupDemo() {
