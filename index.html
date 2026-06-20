@@ -3,11 +3,11 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="一拍即慧 / 羽翼·智导：AI 羽毛球动作纠错大创项目展示网站，记录姿态估计、COCO17 骨架识别、击球帧检测、规则引擎和移动端 App 原型的真实研发进展。" />
+    <meta name="description" content="一拍即慧：基于姿态估计、COCO17 骨架关键点、击球帧检测、骨架动作识别模型与规则引擎的 AI 羽毛球动作纠错系统。" />
     <meta name="theme-color" content="#F8FBF8" />
-    <title>一拍即慧｜AI 羽毛球动作纠错与团队协作平台</title>
+    <title>一拍即慧｜AI 羽毛球动作纠错与个性化训练系统</title>
     <link rel="icon" href="./assets/icons/logo-shuttle.png?v=20260527" type="image/png" />
-    <link rel="stylesheet" href="./styles.css?v=20260618-credibility-1" />
+    <link rel="stylesheet" href="./styles.css?v=20260620-private-weekly-1" />
   </head>
   <body>
     <header class="site-header" data-elevated="false">
@@ -27,8 +27,7 @@
           <a href="#technology">技术方案</a>
           <a href="#demo">系统原型</a>
           <a href="#data">数据进展</a>
-          <a href="#progress">当前进度</a>
-          <a href="#weekly">本周进展</a>
+          <a href="#workspace">登录查看周报</a>
           <a href="#team">团队成员</a>
           <a class="login-link" href="#workspace">工作台演示</a>
         </div>
@@ -40,13 +39,13 @@
         <div class="hero-orbit" aria-hidden="true"></div>
         <div class="container hero-grid">
           <div class="hero-copy reveal">
-            <p class="eyebrow">AI Badminton Coach</p>
+            <p class="eyebrow">AI Motion Intelligence</p>
             <h1 id="hero-title">一拍即慧<span>AI 羽毛球动作纠错系统</span></h1>
             <p class="hero-subtitle">基于姿态估计、COCO17 骨架关键点、击球帧检测、轻量动作识别模型与规则引擎，探索面向移动端的羽毛球动作错误检测与个性化反馈系统。</p>
             <p class="status-note">当前网站用于展示大创项目研发过程，系统原型模块为前端原型，AI 分析模块仍在接入中。</p>
             <div class="hero-actions">
               <a class="button primary" href="#technology">查看技术路线</a>
-              <a class="button secondary" href="#weekly">查看本周进展</a>
+              <a class="button secondary" href="#workspace">登录查看周报</a>
               <a class="button ghost" href="#demo">查看系统原型</a>
             </div>
             <dl class="hero-metrics" aria-label="项目真实研发指标">
@@ -196,7 +195,7 @@
           </aside>
           <div class="demo-phone-wrap reveal">
             <div class="phone-mockup demo-phone">
-              <div class="phone-top"><span>Prototype</span><strong id="demo-action-name">高远球</strong></div>
+              <div class="phone-top"><span>一拍即慧</span><strong id="demo-action-name">高远球</strong></div>
               <div class="phone-stage"><canvas id="skeleton-canvas" width="360" height="420" aria-label="COCO17 骨架原型动画"></canvas><span class="scan-line"></span><span class="coco-badge">Mock Data</span></div>
               <ol class="analysis-steps" id="analysis-steps" aria-label="原型分析步骤"></ol>
             </div>
@@ -216,41 +215,15 @@
         <div class="container prototype-feature-grid" id="prototype-feature-grid" aria-label="系统原型功能说明"></div>
       </section>
 
-      <section class="section progress" id="progress" aria-labelledby="progress-title">
-        <div class="container section-heading reveal">
-          <p class="eyebrow">Project Dashboard</p>
-          <h2 id="progress-title">当前进度</h2>
-          <p>项目按 52 周追踪研发进展，默认展示当前周次、当前阶段、完成比例和本周重点任务。</p>
+      <section class="section weekly-gate" id="weekly" aria-labelledby="weekly-gate-title">
+        <div class="container">
+          <article class="weekly-gate-card reveal">
+            <p class="eyebrow">Team Progress</p>
+            <h2 id="weekly-gate-title">每周成员进度</h2>
+            <p>该内容仅供团队成员登录后查看。</p>
+            <a class="button primary" href="#workspace">登录工作台查看</a>
+          </article>
         </div>
-        <div class="container dashboard">
-          <div class="status-grid" aria-label="当前进度概览">
-            <article class="status-card"><span>当前周次</span><strong id="current-week">--</strong></article>
-            <article class="status-card"><span>当前阶段</span><strong id="current-phase">--</strong></article>
-            <article class="status-card"><span>完成比例</span><strong id="progress-percent">--</strong></article>
-            <article class="status-card accent"><span>本周重点任务</span><strong id="current-focus">读取进度中</strong></article>
-          </div>
-          <div class="phase-board" id="phase-board" aria-label="研发阶段时间轴"></div>
-          <details class="week-drawer" open>
-            <summary>展开 52 周任务追踪</summary>
-            <div class="week-rail" id="week-rail" aria-label="52 周进度节点"></div>
-            <article class="week-detail" aria-live="polite">
-              <p class="eyebrow" id="week-kicker">Week --</p>
-              <h3 id="week-title">读取进度中</h3>
-              <p id="week-copy">正在生成项目周计划。</p>
-              <div class="week-meta"><span id="week-status">--</span><span id="week-output">--</span></div>
-            </article>
-          </details>
-        </div>
-      </section>
-
-
-      <section class="section weekly" id="weekly" aria-labelledby="weekly-title">
-        <div class="container section-heading reveal">
-          <p class="eyebrow">Weekly Updates</p>
-          <h2 id="weekly-title">本周所有成员进展</h2>
-          <p>这里记录当前周真实研发状态：已经完成什么、效果不好的地方、下一步准备怎么改。曹沐宁本周详细进展待补充，不用旧周报冒充。</p>
-        </div>
-        <div class="container weekly-grid" id="weekly-grid" aria-live="polite"></div>
       </section>
 
       <section class="section team" id="team" aria-labelledby="team-title">
@@ -330,27 +303,26 @@
               <button class="button secondary" type="submit">保存到本机</button>
               <p class="auth-message" id="note-message" aria-live="polite"></p>
             </form>
-            <div class="private-work">
-              <div class="private-work-head">
+            <div class="private-weekly-archive">
+              <div class="weekly-archive-head">
+                <p class="eyebrow">Internal Weekly Archive</p>
+                <h4>每周进度档案</h4>
+                <p>仅登录后显示。按周查看全体成员研发进展、当前问题与下周计划。</p>
+              </div>
+              <div class="weekly-archive-controls">
                 <div>
-                  <p class="eyebrow">Internal Updates</p>
-                  <h4>成员工作进展</h4>
-                  <p>以下内容仅在工作台演示登录后显示，用于查看每个人本周完成、下周计划、当前阻塞和负责路线。</p>
+                  <div class="weekly-tabs" id="weekly-tabs" role="tablist" aria-label="选择周次"></div>
+                  <p class="weekly-date-range" id="weekly-current-range" aria-live="polite"></p>
+                </div>
+                <div class="weekly-archive-actions">
+                  <button type="button" class="button secondary" id="weekly-summary-action">查看往期汇总</button>
+                  <button type="button" class="button ghost" id="weekly-export-action">导出周报</button>
                 </div>
               </div>
-              <div class="work-filters" role="group" aria-label="成员工作筛选">
-                <button class="active" type="button" data-filter="all">全部</button>
-                <button type="button" data-filter="algorithm">算法</button>
-                <button type="button" data-filter="frontend">前端</button>
-                <button type="button" data-filter="data">数据</button>
-                <button type="button" data-filter="testing">测试</button>
-                <button type="button" data-filter="docs">文档</button>
-                <button type="button" data-filter="mobile">移动端</button>
-              </div>
-              <div class="work-grid" id="work-grid" aria-live="polite"></div>
+              <div class="weekly-summary-grid" id="weekly-summary-grid" aria-label="周总览"></div>
+              <div class="weekly-record-table" id="weekly-record-table" aria-label="成员周报记录"></div>
+              <div class="weekly-mentor-card" id="weekly-mentor-card" aria-label="指导教师记录"></div>
             </div>
-            <div class="member-tabs" id="member-progress-tabs" role="group" aria-label="选择成员进度"></div>
-            <div class="member-report" id="member-report" aria-live="polite"></div>
           </div>
         </div>
       </section>
@@ -378,18 +350,18 @@
       <div class="container footer-grid">
         <div>
           <a class="brand footer-brand" href="#home"><img src="./assets/icons/logo-shuttle.png?v=20260527" alt="" /><span>一拍即慧</span></a>
-          <p>AI Badminton Motion Analysis System</p>
+          <p>AI 羽毛球动作纠错与个性化训练系统</p>
         </div>
         <div>
           <p>天津工业大学大学生创新训练计划项目，目标申报国家级</p>
           <p>项目周期：2026.05 - 2027.05</p>
         </div>
         <a class="footer-link" href="#workspace">团队协作入口</a>
-        <small><span id="last-updated">最后更新：2026.06.18</span><br />Copyright © 2026 一拍即慧 Project Team</small>
+        <small><span id="last-updated">最后更新：2026.06.20</span><br />Copyright © 2026 一拍即慧 Project Team</small>
       </div>
     </footer>
     <button class="to-top" id="to-top" type="button" aria-label="返回顶部">↑</button>
 
-    <script src="./script.js?v=20260618-credibility-1"></script>
+    <script src="./script.js?v=20260620-private-weekly-1"></script>
   </body>
 </html>

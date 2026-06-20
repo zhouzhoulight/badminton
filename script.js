@@ -58,15 +58,17 @@ const phasePlan = [
   { start: 45, end: 52, phase: "论文撰写与开源", time: "2027.03 - 2027.05", content: "整理软著、论文、开源仓库、项目结题报告和答辩材料。", output: "论文初稿、开源仓库、软著与结题报告" },
 ];
 
-const memberAccounts = [
-  { username: "liyuelong", name: "李月龙" },
-  { username: "zhouzhou", name: "周洲" },
-  { username: "wangpenghan", name: "王鹏涵" },
-  { username: "zhuyihan", name: "朱奕涵" },
-  { username: "jiangyaqi", name: "姜雅琪" },
-  { username: "yangziyu", name: "杨子钰" },
-  { username: "caomuning", name: "曹沐宁" },
-];
+const memberDirectory = {
+  liyuelong: { username: "liyuelong", name: "李月龙", role: "指导教师" },
+  zhouzhou: { username: "zhouzhou", name: "周洲", role: "项目负责人 / 算法 / 网站" },
+  wangpenghan: { username: "wangpenghan", name: "王鹏涵", role: "移动端 App / SQLite" },
+  zhuyihan: { username: "zhuyihan", name: "朱亦涵", role: "击球帧检测 / 动作特征实验" },
+  jiangyaqi: { username: "jiangyaqi", name: "姜雅琪", role: "规则引擎 / 个性化反馈" },
+  yangziyu: { username: "yangziyu", name: "杨子钰", role: "数据采集 / 教练标注" },
+  caomuning: { username: "caomuning", name: "曹沐宁", role: "前端 / 姿态估计与移动端部署协助" },
+};
+
+const memberAccounts = Object.values(memberDirectory).map(({ username, name }) => ({ username, name }));
 
 // Static GitHub Pages demo login only. This is not a production authentication system.
 const initialPasswordHashes = {
@@ -139,7 +141,7 @@ const members = [
     reports: [{ label: "本周", title: "App 原型与数据库", items: ["完善录像和历史查询。", "修复清除历史记录闪退。", "扩展 SQLite 五张表。"] }],
   },
   {
-    name: "朱奕涵",
+    name: "朱亦涵",
     username: "zhuyihan",
     role: "击球帧检测 / 动作特征实验",
     direction: "击球帧 / 规则实验 / 连续动作识别",
@@ -212,9 +214,134 @@ const members = [
   },
 ];
 
+const weeklyArchives = [
+  {
+    id: "week-1",
+    label: "第1周",
+    dateRange: "2026.05.01 - 2026.05.07",
+    summary: {
+      focus: "完成项目启动与基础技术路线确认",
+      data: "制定三类动作的首轮采集计划与文件命名规则",
+      system: "网站与 App 原型进入结构设计阶段",
+      risk: "错误类型与标注口径尚未完全统一",
+    },
+    records: [
+      { username: "zhouzhou", status: "进行中", done: ["梳理姿态估计、动作识别与反馈生成的初步链路", "建立算法路线调研清单"], issues: ["主模型与对比模型尚未确定"], next: ["调研 ST-GCN、ProtoGCN 与轻量时空模型", "明确最小可运行闭环"] },
+      { username: "yangziyu", status: "正常", done: ["联系教练确认三类动作拍摄方向", "整理志愿者招募与拍摄需求"], issues: ["拍摄视角与错误动作描述需要教练确认"], next: ["形成拍摄流程表", "继续联系教练和志愿者"] },
+      { username: "wangpenghan", status: "进行中", done: ["使用 Java 搭建 Android App 基础框架", "完成主页导航和权限申请原型"], issues: ["CameraX 真机兼容性待验证"], next: ["接入录像与本地保存功能", "测试不同 Android 版本"] },
+      { username: "zhuyihan", status: "进行中", done: ["梳理击球瞬间可能使用的手腕速度特征", "收集自动定位击球帧的参考代码"], issues: ["缺少带准确击球帧的样本"], next: ["建立首批击球帧标注样例", "验证速度峰值规则"] },
+      { username: "jiangyaqi", status: "进行中", done: ["梳理错误类型与训练建议的映射思路", "调研个性化反馈的数据字段"], issues: ["建议分层缺少统一规则"], next: ["设计错误字典结构", "整理用户等级字段"] },
+      { username: "caomuning", status: "进行中", done: ["调研移动端姿态估计部署路线", "整理 RTMPose 与 TFLite 资料"], issues: ["模型格式与 Android 推理流程尚不清晰"], next: ["在 Python 环境验证姿态模型", "准备移动端部署测试"] },
+    ],
+    mentor: { username: "liyuelong", guidance: ["指导项目选题方向和整体技术路线", "明确阶段工作应形成可验收产出"], next: ["检查技术路线可行性", "审阅首轮数据采集方案"] },
+  },
+  {
+    id: "week-2",
+    label: "第2周",
+    dateRange: "2026.05.08 - 2026.05.14",
+    summary: {
+      focus: "细化动作类别、错误类型与视频采集规范",
+      data: "完成正手发球、反手发球和高远球的拍摄准备",
+      system: "App 相机与网站信息架构同步推进",
+      risk: "错误动作定义仍需更多教练意见验证",
+    },
+    records: [
+      { username: "zhouzhou", status: "进行中", done: ["协调算法、数据与 App 路线同步推进", "粗读 ProtoGCN 并评估其细粒度识别价值"], issues: ["ProtoGCN 部分模块与原论文结构绑定较深"], next: ["优先分析可迁移的 MTE 思路", "继续熟悉 ST-GCN 数据流"] },
+      { username: "yangziyu", status: "正常", done: ["与两位教练沟通并修改动作错误细节", "确定三个动作和多视角专业视频拍摄流程"], issues: ["志愿者拍摄时间仍需协调"], next: ["收集教练标准动作视频", "开始第一批志愿者招募"] },
+      { username: "wangpenghan", status: "进行中", done: ["完成 App 录像并按时间顺序保存到本地", "建立 Java 版本代码仓库"], issues: ["部分设备权限流程仍不稳定"], next: ["实现历史记录列表", "完善录像文件索引"] },
+      { username: "zhuyihan", status: "进行中", done: ["重新整理击球帧标注顺序", "生成首批完整 label 文件"], issues: ["自动标注代码只能保留最后一帧数据"], next: ["修复逐帧数据保存", "扩展肘部和身体角度特征"] },
+      { username: "jiangyaqi", status: "正常", done: ["调整错误类型的分层建议", "设计 users、error_records、weekly_plan 数据结构"], issues: ["规则建议与 App 数据表存在字段差异"], next: ["完成错误类型字典", "与移动端路线统一字段"] },
+      { username: "caomuning", status: "需继续验证", done: ["在 Python 中验证 17 个关键点输出", "将 TFLite 模型导入 Android Studio"], issues: ["CameraX 打开后出现黑屏"], next: ["排查 CameraX 生命周期和兼容问题", "完成真机姿态识别测试"] },
+    ],
+    mentor: { username: "liyuelong", guidance: ["审阅三类动作与错误类型定义", "建议数据采集先保证动作和标签质量"], next: ["检查教练视频与标注模板", "指导各路线确定阶段接口"] },
+  },
+  {
+    id: "week-3",
+    label: "第3周",
+    dateRange: "2026.05.15 - 2026.05.21",
+    summary: {
+      focus: "打通 COCO17 骨架输入与移动端录像基础流程",
+      data: "完成教练标准动作视频裁剪和首轮标签整理",
+      system: "App 可录像保存，姿态模型进入真机适配阶段",
+      risk: "击球帧暂未准确定位，TFLite 输出解码仍不稳定",
+    },
+    records: [
+      { username: "zhouzhou", status: "进行中", done: ["将 ST-GCN 图结构扩展为 COCO17", "使用模拟 COCO17 数据跑通训练与测试", "编写关键点到 N×C×T×V×M 的转换脚本"], issues: ["真实视频尚未形成最小训练闭环"], next: ["接入 1 至 3 条真实标注视频", "验证 RTMPose 到 ST-GCN 的完整数据链"] },
+      { username: "yangziyu", status: "正常", done: ["获取教练的三个标准动作视频", "完成视频裁剪、人脸模糊和动作位置标注", "生成 CSV 表格"], issues: ["真实错误样本数量仍不足"], next: ["组织第一批志愿者拍摄", "继续完善错误细节说明"] },
+      { username: "wangpenghan", status: "正常", done: ["建立 SQLite 用户表与训练记录表", "实现历史记录 RecyclerView 和视频路径字段"], issues: ["真实 AI 分析结果暂无可接字段"], next: ["让历史记录卡片连接本地视频", "设计个人中心结构"] },
+      { username: "zhuyihan", status: "进行中", done: ["配置 YOLOv8 与 MediaPipe 环境", "实现手腕速度峰值和部分角度输出"], issues: ["逐帧分析数据仍无法完整保存"], next: ["修复帧级结果写入", "增加击球帧误检分析"] },
+      { username: "jiangyaqi", status: "正常", done: ["完成 SQLite 规则字段设计", "建立 16 种错误及训练建议字典", "实现按近 30 天错误频次生成周计划"], issues: ["当前仅使用模拟历史记录"], next: ["输出结构化训练计划", "准备与 App 数据库合并"] },
+      { username: "caomuning", status: "需继续验证", done: ["解决 App 无法打开摄像头的初步问题", "尝试在移动端提取关键点骨架"], issues: ["姿态模型不贴合人体，SimCC 解码与 TFLite 维度冲突"], next: ["重新检查模型转换", "实现 SimCC argmax 解码"] },
+    ],
+    mentor: { username: "liyuelong", guidance: ["指导先跑通最小真实数据闭环", "要求算法与数据路线明确输入输出格式"], next: ["检查真实视频到骨架训练的结果", "评估移动端模型可行性"] },
+  },
+  {
+    id: "week-4",
+    label: "第4周",
+    dateRange: "2026.05.22 - 2026.05.28",
+    summary: {
+      focus: "推进击球帧规则、SQLite 与规则引擎初版",
+      data: "整理击球帧标签并准备真实视频批量采集",
+      system: "App 历史记录和个人中心原型已形成",
+      risk: "规则法准确率和移动端姿态模型稳定性仍需验证",
+    },
+    records: [
+      { username: "zhouzhou", status: "进行中", done: ["使用平均抽帧方式跑通 3 个真实高远球视频", "完成 ST-GCN 原论文数据格式与训练流程实验", "评估 ProtoGCN 的 MTE 迁移方向"], issues: ["击球帧尚未准确获得"], next: ["接入人工目测击球帧", "建立真实视频最小闭环"] },
+      { username: "yangziyu", status: "正常", done: ["继续与教练确认错误动作细节", "整理图文版错误说明和拍摄清单"], issues: ["专业示范与普通志愿者动作差异需要控制"], next: ["组织分批拍摄", "按动作和错误类型归档视频"] },
+      { username: "wangpenghan", status: "进行中", done: ["实现历史详情卡片跳转对应视频", "完成个人中心总体框架", "修复多项 App bug"], issues: ["AI 分析模块暂以假数据占位"], next: ["合并 SQLite 代码", "完善视频与训练记录关联"] },
+      { username: "zhuyihan", status: "需继续验证", done: ["实现视频到 MediaPipe 姿态、手腕速度峰值和候选击球帧保存", "加入肘角、肩旋转和球拍方向条件"], issues: ["检测准确度仍不足"], next: ["加入球拍与羽毛球距离", "验证手腕角速度与连续帧条件"] },
+      { username: "jiangyaqi", status: "正常", done: ["完成 Python 版周计划生成逻辑", "按初学者与进阶者匹配不同训练建议", "将计划写入 weekly_plan 表"], issues: ["规则阈值缺少真实用户数据验证"], next: ["准备模拟测试集", "与 App 路线合并数据库"] },
+      { username: "caomuning", status: "需继续验证", done: ["学习卡尔曼滤波预测与更新流程", "调研置信度驱动的姿态检测触发机制"], issues: ["论文场景与单人羽毛球训练并不完全匹配"], next: ["验证关键点轨迹平滑", "整理 BMP 思路可迁移部分"] },
+    ],
+    mentor: { username: "liyuelong", guidance: ["指导团队区分工程规则与模型方法", "要求击球帧检测记录准确率和误检原因"], next: ["检查数据库和规则引擎接口", "推进真实视频批量采集"] },
+  },
+  {
+    id: "week-5",
+    label: "第5周",
+    dateRange: "2026.05.29 - 2026.06.04",
+    summary: {
+      focus: "完成 176 条教练标注，项目从原型展示转向真实数据闭环",
+      data: "已整理 270 条可用视频，下周预计新增 450 条，阶段总量预计达到 720 条",
+      system: "App 完善分辨率、语音播报、自动分析开关和历史记录流程",
+      risk: "AI 分析模块尚未接入，击球帧检测规则法误检较多，部分成员记录需补充",
+    },
+    records: [
+      { username: "zhouzhou", status: "进行中", done: ["明确视频输入、姿态估计、COCO17 关键点、击球帧检测、动作识别、错误检测、规则反馈的完整链路", "阅读 ProtoGCN 代码，梳理关键点数据进入 backbone 与 head 分类流程", "调研 UniSTFormer，判断其更适合作为移动端主模型候选", "优化项目展示网站结构"], issues: ["真实数据到模型训练的闭环仍需打通", "UniSTFormer、ST-GCN、FreqMixFormer 仍需正式对比实验"], next: ["更新网站内容", "推进真实数据集与模型训练对接", "设计 baseline 对比实验"] },
+      { username: "yangziyu", status: "正常", done: ["整理上周四、周六拍摄视频", "将视频分类后交给教练进行错误标注", "获得 1 名志愿者 176 条视频的教练标注结果", "将标注结果整理为 CSV 表格并交给算法路线"], issues: ["现有视频规范性仍需提高", "志愿者数量和数据多样性仍需扩充"], next: ["按教练要求重新组织拍摄", "预计新增 450 条视频", "阶段数据总量预计达到 720 条"] },
+      { username: "wangpenghan", status: "进行中", done: ["加入不同检测相机采集分辨率选项", "加入语音播报开关和自动 AI 分析开关", "完善 App 录像、历史查询和调用分析流程", "修复清除历史记录时 App 闪退的问题", "按规则引擎需求扩展 SQLite 为五张主要数据表"], issues: ["AI 分析模块尚未正式接入", "SQLite 与真实分析结果仍需进一步打通"], next: ["完善录像、分析、历史记录、数据库闭环", "预留真实 AI 输出字段"] },
+      { username: "zhuyihan", status: "需继续验证", done: ["测试手腕速度、手臂方向、手肘角度、羽毛球检测、连续帧峰值等击球帧规则", "发现规则法最好约 50% 正确率，误检仍较多", "建立 hit / nonhit 文件夹数据集", "标注约 200 张击球帧用于训练", "尝试 LSTM 连续动作识别"], issues: ["规则法误检较多", "hit / nonhit 数据量不足", "LSTM 效果暂不理想"], next: ["扩充击球帧数据集", "继续验证连续动作识别方法", "输出误检原因分析"] },
+      { username: "jiangyaqi", status: "正常", done: ["完善规则引擎 Python 原型", "统一与 App 路线冲突的数据库结构", "实现用户等级判定逻辑", "实现按错误频次返回不同层级建议", "使用 100 条模拟数据测试规则引擎并生成示例报告"], issues: ["当前规则引擎仍基于模拟数据", "尚未接入 App 真实历史记录和 AI 分析结果"], next: ["与 SQLite 和 App 历史记录模块继续对接", "准备接入真实分析结果字段"] },
+      { username: "caomuning", status: "需补充", done: ["协助前端展示与部署资料整理"], issues: ["本周未提交完整可量化进展记录", "需要明确负责模块的可验收产出"], next: ["补交前端或部署协助记录", "至少形成一个可验收结果：页面模块修改、部署文档、姿态估计接口整理三选一"] },
+    ],
+    mentor: { username: "liyuelong", guidance: ["指导项目技术路线、实验设计和阶段成果表达", "帮助团队区分工程原型、模拟数据和真实 AI 模型边界", "对论文结构、算法实验和成果材料提供建议"], next: ["推进真实数据闭环", "指导模型对比实验", "检查阶段成果材料可信度"] },
+  },
+  {
+    id: "week-6",
+    label: "第6周",
+    dateRange: "2026.06.05 - 2026.06.11",
+    summary: {
+      focus: "推进新增视频采集并准备首轮真实数据训练闭环",
+      data: "按统一规范扩充三类动作数据，检查 CSV 与视频一一对应",
+      system: "继续打通 App、SQLite、规则引擎与 AI 输出预留接口",
+      risk: "本周为计划周，实际产出与实验指标将在组会后更新",
+    },
+    records: [
+      { username: "zhouzhou", status: "进行中", done: ["制定真实数据接入检查清单", "整理 baseline 对比实验所需指标"], issues: ["真实骨架序列尚未完成批量转换"], next: ["完成首批数据转换与训练", "记录 ST-GCN 与 UniSTFormer baseline"] },
+      { username: "yangziyu", status: "进行中", done: ["按教练意见更新拍摄规范", "整理新增志愿者分组方案"], issues: ["拍摄场地与人员时间需要协调"], next: ["执行新增视频拍摄", "完成视频命名、筛选与送标"] },
+      { username: "wangpenghan", status: "进行中", done: ["检查五张 SQLite 表的字段关系", "整理真实分析结果的接口占位"], issues: ["模型输出格式尚未最终确定"], next: ["打通录像到历史记录流程", "等待算法字段后完成联调"] },
+      { username: "zhuyihan", status: "需继续验证", done: ["整理规则法误检类型", "制定 hit / nonhit 扩充方案"], issues: ["连续帧样本和负样本仍不足"], next: ["补充数据并重新训练", "对比规则法和学习方法"] },
+      { username: "jiangyaqi", status: "进行中", done: ["整理规则引擎对接字段", "复核模拟报告中的等级与建议逻辑"], issues: ["真实历史记录尚未接入"], next: ["接收 App 测试数据", "验证真实记录上的规则输出"] },
+      { username: "caomuning", status: "需补充", done: ["整理姿态估计移动端部署问题清单", "准备前端与部署协助记录模板"], issues: ["缺少本周可量化验证结果"], next: ["完成一个可复现部署测试", "提交接口或页面修改记录"] },
+    ],
+    mentor: { username: "liyuelong", guidance: ["指导第六周围绕真实数据闭环安排工作", "要求实验记录同时包含成功结果与失败原因"], next: ["检查新增数据质量", "审阅 baseline 对比方案与 App 接口定义"] },
+  },
+];
+
+let selectedWeekId = weeklyArchives[weeklyArchives.length - 1].id;
+
 const outcomes = [
   ["移动端 App 原型", "已完成录像、历史查询、分辨率选项、语音播报和自动分析开关；AI 模块暂未接入。", "开发中", "王鹏涵 / 曹沐宁"],
-  ["可训练数据集", "已整理 270 条可用视频，完成 176 条教练标注，下周预计新增 450 条。", "开发中", "杨子钰 / 朱奕涵"],
+  ["可训练数据集", "已整理 270 条可用视频，完成 176 条教练标注，下周预计新增 450 条。", "开发中", "杨子钰 / 朱亦涵"],
   ["模型实验代码", "UniSTFormer 为移动端重点候选，ST-GCN / ST-GCN++ / ProtoGCN / FreqMixFormer 做对比。", "规划中", "周洲"],
   ["规则引擎原型", "已使用 100 条模拟数据验证用户等级、错误统计和分层建议。", "开发中", "姜雅琪"],
   ["软件著作权", "待系统 V1.0 和核心功能链路稳定后整理登记材料。", "待完成", "周洲 / 王鹏涵"],
@@ -277,12 +404,9 @@ document.addEventListener("DOMContentLoaded", () => {
   renderDatasetStats();
   renderModelComparison();
   renderPrototypeSteps();
-  renderWeeklyProgress();
   setupDemo();
-  setupProgress();
   setupTeam();
   setupWorkspace();
-  setupMemberWork();
   setupRoadmap();
   setupOutcomes();
   drawCanvases();
@@ -430,20 +554,132 @@ function renderPrototypeSteps() {
   }
 }
 
-function renderWeeklyProgress() {
-  const grid = document.querySelector("#weekly-grid");
-  if (!grid) return;
-  grid.replaceChildren(...members.map((member) => {
-    const card = document.createElement("article");
-    card.className = `weekly-card reveal visible ${member.username === "liyuelong" ? "mentor-weekly" : ""}`;
-    card.innerHTML = `
-      <header><span class="avatar">${member.name.slice(0, 1)}</span><div><h3>${member.name}</h3><p>${member.role}</p></div><b>${member.status}</b></header>
-      <div class="weekly-block"><span>本周进展</span><ul>${member.weeklyItems.map((item) => `<li>${item}</li>`).join("")}</ul></div>
-      <div class="weekly-block"><span>当前问题</span><ul>${member.issues.map((item) => `<li>${item}</li>`).join("")}</ul></div>
-      <div class="weekly-block"><span>下周计划</span><ul>${member.nextItems.map((item) => `<li>${item}</li>`).join("")}</ul></div>
-    `;
-    return card;
+function getMemberByUsername(username) {
+  return memberDirectory[username] || { username: "", name: "未知成员", role: "成员" };
+}
+
+function clearWeeklyArchive() {
+  ["#weekly-tabs", "#weekly-summary-grid", "#weekly-record-table", "#weekly-mentor-card"].forEach((selector) => {
+    document.querySelector(selector)?.replaceChildren();
+  });
+  setText("#weekly-current-range", "");
+}
+
+function renderWeeklyArchive() {
+  const panel = document.querySelector("#member-private");
+  if (!getActiveAccount() || !panel || panel.hidden) {
+    clearWeeklyArchive();
+    return;
+  }
+  const currentWeek = weeklyArchives.find((week) => week.id === selectedWeekId) || weeklyArchives[weeklyArchives.length - 1];
+  if (!currentWeek) return;
+  renderWeekTabs();
+  renderWeekSummary(currentWeek);
+  renderWeekMembers(currentWeek);
+  renderWeekMentor(currentWeek);
+  setText("#weekly-current-range", `${currentWeek.label} · ${currentWeek.dateRange}`);
+
+  const summaryAction = document.querySelector("#weekly-summary-action");
+  const exportAction = document.querySelector("#weekly-export-action");
+  if (summaryAction && !summaryAction.dataset.bound) {
+    summaryAction.dataset.bound = "true";
+    summaryAction.addEventListener("click", () => console.log("查看往期汇总"));
+  }
+  if (exportAction && !exportAction.dataset.bound) {
+    exportAction.dataset.bound = "true";
+    exportAction.addEventListener("click", () => console.log("导出周报"));
+  }
+}
+
+function renderWeekTabs() {
+  const tabs = document.querySelector("#weekly-tabs");
+  if (!tabs) return;
+  tabs.replaceChildren(...weeklyArchives.map((week) => {
+    const button = document.createElement("button");
+    const active = week.id === selectedWeekId;
+    button.type = "button";
+    button.className = `weekly-tab${active ? " active" : ""}`;
+    button.textContent = week.label;
+    button.setAttribute("role", "tab");
+    button.setAttribute("aria-selected", String(active));
+    button.setAttribute("aria-controls", "weekly-record-table");
+    button.addEventListener("click", () => {
+      selectedWeekId = week.id;
+      renderWeeklyArchive();
+    });
+    return button;
   }));
+}
+
+function renderWeekSummary(currentWeek) {
+  const grid = document.querySelector("#weekly-summary-grid");
+  if (!grid) return;
+  const summaries = [
+    ["本周重点", currentWeek.summary.focus, "focus"],
+    ["数据进展", currentWeek.summary.data, "data"],
+    ["系统进展", currentWeek.summary.system, "system"],
+    ["风险提醒", currentWeek.summary.risk, "risk"],
+  ];
+  grid.replaceChildren(...summaries.map(([title, copy, type], index) => {
+    const article = document.createElement("article");
+    article.className = `weekly-summary-card weekly-summary-${type} reveal visible`;
+    article.innerHTML = `<span>${String(index + 1).padStart(2, "0")}</span><h3>${title}</h3><p>${copy}</p>`;
+    return article;
+  }));
+}
+
+function renderRecordList(items, emptyText = "本周暂无记录") {
+  const values = Array.isArray(items) && items.length ? items : [emptyText];
+  return `<ul>${values.map((item) => `<li>${item}</li>`).join("")}</ul>`;
+}
+
+function renderWeekMembers(currentWeek) {
+  const table = document.querySelector("#weekly-record-table");
+  if (!table) return;
+  if (!currentWeek.records?.length) {
+    table.innerHTML = '<div class="weekly-empty-state">该周成员记录尚未录入。</div>';
+    return;
+  }
+
+  const header = document.createElement("div");
+  header.className = "weekly-record-header";
+  header.innerHTML = "<span>成员与角色</span><span>本周完成</span><span>当前问题</span><span>下周计划</span>";
+
+  const rows = currentWeek.records.map((record) => {
+    const member = getMemberByUsername(record.username);
+    const row = document.createElement("article");
+    const statusKind = record.status === "正常" ? "normal" : record.status === "进行中" ? "active" : "attention";
+    row.className = "weekly-record-row reveal visible";
+    row.innerHTML = `
+      <div class="weekly-member-cell">
+        <span class="weekly-member-avatar" aria-hidden="true">${member.name.slice(0, 1)}</span>
+        <div class="weekly-member-meta"><h3>${member.name}</h3><p>${member.role}</p><span class="weekly-status-chip is-${statusKind}">${record.status}</span></div>
+      </div>
+      <div class="weekly-record-block"><h4>本周完成</h4>${renderRecordList(record.done)}</div>
+      <div class="weekly-record-block"><h4>当前问题</h4>${renderRecordList(record.issues, "暂无个人阻塞")}</div>
+      <div class="weekly-record-block"><h4>下周计划</h4>${renderRecordList(record.next)}</div>
+    `;
+    return row;
+  });
+  table.replaceChildren(header, ...rows);
+}
+
+function renderWeekMentor(currentWeek) {
+  const container = document.querySelector("#weekly-mentor-card");
+  if (!container) return;
+  const mentorRecord = currentWeek.mentor;
+  if (!mentorRecord) {
+    container.innerHTML = '<div class="weekly-empty-state">该周指导记录尚未录入。</div>';
+    return;
+  }
+  const mentor = getMemberByUsername(mentorRecord.username);
+  container.innerHTML = `
+    <header><span class="weekly-member-avatar" aria-hidden="true">${mentor.name.slice(0, 1)}</span><div><p class="eyebrow">Mentor Notes</p><h3>${mentor.name}老师｜指导记录</h3><p>${currentWeek.label} · ${currentWeek.dateRange}</p></div></header>
+    <div class="weekly-mentor-grid">
+      <div class="weekly-record-block"><h4>本周指导</h4>${renderRecordList(mentorRecord.guidance)}</div>
+      <div class="weekly-record-block"><h4>下周指导重点</h4>${renderRecordList(mentorRecord.next)}</div>
+    </div>
+  `;
 }
 
 function setupDemo() {
@@ -532,19 +768,6 @@ function updateResult(flash = false) {
   if (flash) document.querySelector(".result-panel")?.animate([{ transform: "translateY(0)" }, { transform: "translateY(-4px)" }, { transform: "translateY(0)" }], { duration: 380 });
 }
 
-function setupProgress() {
-  const week = getCurrentWeek();
-  const phase = getPhaseByWeek(week);
-  const percent = Math.round((week / 52) * 100);
-  setText("#current-week", `第 ${week} 周`);
-  setText("#current-phase", phase.phase);
-  setText("#progress-percent", `${percent}%`);
-  setText("#current-focus", phase.content.split("、").slice(0, 2).join("、"));
-  renderPhaseBoard(week);
-  renderWeekRail(week);
-  selectWeek(week);
-}
-
 function getCurrentWeek() {
   const diff = Date.now() - projectStart.getTime();
   return Math.max(1, Math.min(52, Math.floor(diff / (7 * 24 * 60 * 60 * 1000)) + 1));
@@ -552,93 +775,6 @@ function getCurrentWeek() {
 
 function getPhaseByWeek(week) {
   return phasePlan.find((phase) => week >= phase.start && week <= phase.end) || phasePlan[phasePlan.length - 1];
-}
-
-function weekInfo(week) {
-  const phase = getPhaseByWeek(week);
-  return {
-    week,
-    phase,
-    title: `${phase.phase} · W${week}`,
-    copy: `第 ${week} 周重点围绕“${phase.content}”推进，在组会上同步风险、产出与下一步计划。`,
-    output: phase.output,
-  };
-}
-
-function renderPhaseBoard(currentWeek) {
-  const board = document.querySelector("#phase-board");
-  if (!board) return;
-  board.replaceChildren(...phasePlan.map((phase, index) => {
-    const card = document.createElement("button");
-    card.type = "button";
-    const active = currentWeek >= phase.start && currentWeek <= phase.end;
-    const done = currentWeek > phase.end;
-    card.className = `phase-card${active ? " active" : ""}${done ? " done" : ""}`;
-    card.dataset.phaseStart = String(phase.start);
-    card.dataset.phaseEnd = String(phase.end);
-    card.setAttribute("aria-label", `查看阶段 ${index + 1}，${phase.phase}，对应第 ${phase.start} 到 ${phase.end} 周`);
-    card.innerHTML = `<span>阶段 ${index + 1}</span><strong>${phase.phase}</strong><small>${phase.time}</small><em>W${phase.start}-W${phase.end}</em>`;
-    card.addEventListener("click", () => selectPhase(index, currentWeek));
-    return card;
-  }));
-}
-
-function selectPhase(phaseIndex, currentWeek) {
-  const phase = phasePlan[phaseIndex];
-  if (!phase) return;
-  const targetWeek = currentWeek >= phase.start && currentWeek <= phase.end ? currentWeek : phase.start;
-  selectWeek(targetWeek, { scrollToWeek: true });
-}
-
-function renderWeekRail(currentWeek) {
-  const rail = document.querySelector("#week-rail");
-  if (!rail) return;
-  rail.replaceChildren();
-  for (let week = 1; week <= 52; week += 1) {
-    const phase = getPhaseByWeek(week);
-    const button = document.createElement("button");
-    button.type = "button";
-    button.className = "week-button";
-    if (week < currentWeek) button.classList.add("done");
-    if (week === currentWeek) button.classList.add("current");
-    button.dataset.week = String(week);
-    button.innerHTML = `<strong>W${week}</strong><span>${phase.phase}</span>`;
-    button.addEventListener("click", () => selectWeek(week));
-    rail.appendChild(button);
-  }
-}
-
-function selectWeek(week, options = {}) {
-  const info = weekInfo(week);
-  const currentWeek = getCurrentWeek();
-  const status = week < currentWeek ? "已完成" : week === currentWeek ? "进行中" : "未开始";
-  document.querySelectorAll(".week-button").forEach((button) => button.classList.toggle("active", Number(button.dataset.week) === week));
-  highlightPhaseByWeek(week);
-  setText("#week-kicker", `Week ${week}`);
-  setText("#week-title", info.title);
-  setText("#week-copy", info.copy);
-  setText("#week-status", status);
-  setText("#week-output", `阶段产出：${info.output}`);
-  if (options.scrollToWeek) scrollWeekIntoView(week);
-}
-
-function highlightPhaseByWeek(week) {
-  document.querySelectorAll(".phase-card").forEach((card) => {
-    const start = Number(card.dataset.phaseStart);
-    const end = Number(card.dataset.phaseEnd);
-    const selected = week >= start && week <= end;
-    card.classList.toggle("selected", selected);
-    card.setAttribute("aria-pressed", String(selected));
-  });
-}
-
-function scrollWeekIntoView(week) {
-  const drawer = document.querySelector(".week-drawer");
-  if (drawer) drawer.open = true;
-  window.requestAnimationFrame(() => {
-    const button = document.querySelector(`.week-button[data-week="${week}"]`);
-    button?.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "center" });
-  });
 }
 
 function setupTeam() {
@@ -736,15 +872,21 @@ function renderAuthState(account) {
   const auth = document.querySelector("#member-auth");
   const panel = document.querySelector("#member-private");
   if (!auth || !panel) return;
-  auth.hidden = Boolean(account);
-  panel.hidden = !account;
   if (!account) {
-    document.querySelector("#member-report")?.replaceChildren();
-    document.querySelector("#member-progress-tabs")?.replaceChildren();
+    auth.hidden = false;
+    panel.hidden = true;
+    clearWeeklyArchive();
     updatePasswordStatus();
     return;
   }
+  auth.hidden = true;
+  panel.hidden = false;
   const member = members.find((item) => item.username === account.username);
+  if (!member) {
+    sessionStorage.removeItem(authSessionKey);
+    renderAuthState(null);
+    return;
+  }
   setText("#member-session-user", `${member.name} 的工作台`);
   setText("#member-session-role", member.role);
   setText("#personal-week-task", member.weekly);
@@ -756,65 +898,7 @@ function renderAuthState(account) {
   const textarea = document.querySelector("#task-note");
   if (textarea) textarea.value = notes[member.username] || "";
   updatePasswordStatus(member.username);
-  renderMemberTabs(member.name);
-}
-
-function renderMemberTabs(activeName) {
-  const tabs = document.querySelector("#member-progress-tabs");
-  if (!tabs) return;
-  tabs.replaceChildren(...members.map((member) => {
-    const button = document.createElement("button");
-    button.type = "button";
-    button.textContent = member.name;
-    button.className = member.name === activeName ? "active" : "";
-    button.addEventListener("click", () => {
-      tabs.querySelectorAll("button").forEach((item) => item.classList.toggle("active", item === button));
-      renderMemberReport(member.name);
-    });
-    return button;
-  }));
-  renderMemberReport(activeName);
-}
-
-function renderMemberReport(name) {
-  const container = document.querySelector("#member-report");
-  const member = members.find((item) => item.name === name);
-  if (!container || !member) return;
-  container.replaceChildren(...member.reports.map((report) => {
-    const article = document.createElement("article");
-    article.className = "member-report-card";
-    article.innerHTML = `
-      <div class="member-report-time"><span>${report.label}</span><strong>${member.name}</strong><em>${member.role}</em></div>
-      <div class="member-report-body"><h4>${report.title}</h4><ul>${report.items.map((item) => `<li>${item}</li>`).join("")}</ul></div>
-    `;
-    return article;
-  }));
-}
-
-function setupMemberWork() {
-  setupFilteredButtons(".work-filters button", renderWork);
-  renderWork("all");
-}
-
-function renderWork(filter) {
-  const grid = document.querySelector("#work-grid");
-  if (!grid) return;
-  grid.replaceChildren(...filterMembers(filter).map((member) => {
-    const card = document.createElement("article");
-    card.className = "work-card reveal visible";
-    card.innerHTML = `
-      <h3>${member.name}</h3>
-      <p class="role">${member.route}</p>
-      <span class="task-status">${member.status}</span>
-      <div class="work-meta">
-        <div><span>本周完成</span><strong>${member.weekly}</strong></div>
-        <div><span>下周计划</span><strong>${member.next}</strong></div>
-        <div><span>当前阻塞</span><strong>${member.blocker}</strong></div>
-      </div>
-      <details><summary>展开近期记录</summary><ul>${member.reports.flatMap((report) => report.items.slice(0, 2)).map((item) => `<li>${item}</li>`).join("")}</ul></details>
-    `;
-    return card;
-  }));
+  renderWeeklyArchive();
 }
 
 function setupRoadmap() {
